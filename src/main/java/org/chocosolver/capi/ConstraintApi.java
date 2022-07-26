@@ -212,7 +212,7 @@ public class ConstraintApi {
         return res;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "distance_iv_iv_i")
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "distance_iv_iv_iv")
     public static ObjectHandle distance_iv_iv_iv(IsolateThread thread, ObjectHandle modelHandle,
                                                  ObjectHandle intVarHandle1, ObjectHandle intVarHandle2,
                                                  CCharPointer op, ObjectHandle intVarHandle3) {

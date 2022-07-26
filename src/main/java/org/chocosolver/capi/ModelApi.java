@@ -37,13 +37,11 @@ public class ModelApi {
         return res;
     }
 
-    // Solve
-
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "solve")
-    public static void solve(IsolateThread thread, ObjectHandle modelHandle) {
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "getSolver")
+    public static ObjectHandle getSolver(IsolateThread thread, ObjectHandle modelHandle) {
         Model model = globalHandles.get(modelHandle);
         Solver solver = model.getSolver();
-        solver.showStatistics();
-        solver.solve();
+        ObjectHandle res = globalHandles.create(solver);
+        return res;
     }
 }
