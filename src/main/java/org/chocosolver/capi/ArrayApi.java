@@ -1,6 +1,7 @@
 package org.chocosolver.capi;
 
 import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.util.criteria.Criterion;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.ObjectHandles;
@@ -66,7 +67,7 @@ public class ArrayApi {
     public static ObjectHandle getIntVarArrayElement(IsolateThread thread, ObjectHandle arrayHandle, int index) {
         IntVar[] array = globalHandles.get(arrayHandle);
         IntVar var = array[index];
-        ObjectHandle res = globalHandles.create(array);
+        ObjectHandle res = globalHandles.create(var);
         return res;
     }
 
@@ -75,4 +76,36 @@ public class ArrayApi {
         IntVar[] array = globalHandles.get(arrayHandle);
         return array.length;
     }
+
+    // Criterion Arrays
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "criterion_create")
+    public static ObjectHandle createCriterionArray(IsolateThread thread, int size) {
+        Criterion[] array = new Criterion[size];
+        ObjectHandle res = globalHandles.create(array);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "criterion_set")
+    public static void setCriterionArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                                ObjectHandle criterionHandle, int index) {
+        Criterion[] array = globalHandles.get(arrayHandle);
+        Criterion criterion = globalHandles.get(criterionHandle);
+        array[index] = criterion;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "criterion_get")
+    public static ObjectHandle getCriterionArrayElement(IsolateThread thread, ObjectHandle arrayHandle, int index) {
+        Criterion[] array = globalHandles.get(arrayHandle);
+        Criterion criterion = array[index];
+        ObjectHandle res = globalHandles.create(criterion);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "length")
+    public static int getArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
+        Object[] array = globalHandles.get(arrayHandle);
+        return array.length;
+    }
+
 }
