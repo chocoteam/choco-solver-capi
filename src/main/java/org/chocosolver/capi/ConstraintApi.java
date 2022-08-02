@@ -2,6 +2,7 @@ package org.chocosolver.capi;
 
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
+import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
@@ -471,4 +472,25 @@ public class ConstraintApi {
         constraint.post();
     }
 
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "reify")
+    public static ObjectHandle reify(IsolateThread thread, ObjectHandle constraintHandle) {
+        Constraint constraint = globalHandles.get(constraintHandle);
+        BoolVar b = constraint.reify();
+        ObjectHandle res = globalHandles.create(b);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "is_satisfied")
+    public static int isSatisfied(IsolateThread thread, ObjectHandle constraintHandle) {
+        Constraint constraint = globalHandles.get(constraintHandle);
+        switch (constraint.isSatisfied()) {
+            case FALSE:
+                return 0;
+            case TRUE:
+                return 1;
+            case UNDEFINED:
+                return 2;
+        }
+        return 2;
+    }
 }
