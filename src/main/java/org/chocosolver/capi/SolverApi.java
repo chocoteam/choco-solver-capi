@@ -21,6 +21,16 @@ public class SolverApi {
 
     private static ObjectHandles globalHandles = ObjectHandles.getGlobal();
 
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "solve")
+    public static boolean solve(IsolateThread thread, ObjectHandle solverHandler,
+                                ObjectHandle stopArrayHandle) {
+        Solver solver = globalHandles.get(solverHandler);
+        Criterion[] stop = globalHandles.get(stopArrayHandle);
+        solver.addStopCriterion(stop);
+        boolean res = solver.solve();
+        return res;
+    }
+
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "findSolution")
     public static ObjectHandle findSolution(IsolateThread thread, ObjectHandle solverHandler,
                                             ObjectHandle stopArrayHandle) {

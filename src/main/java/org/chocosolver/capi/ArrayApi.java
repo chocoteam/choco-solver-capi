@@ -1,5 +1,7 @@
 package org.chocosolver.capi;
 
+import org.chocosolver.solver.constraints.Constraint;
+import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.util.criteria.Criterion;
 import org.graalvm.nativeimage.IsolateThread;
@@ -76,6 +78,41 @@ public class ArrayApi {
         IntVar[] array = globalHandles.get(arrayHandle);
         return array.length;
     }
+
+    // BoolVar Arrays
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "boolVar_create")
+    public static ObjectHandle createBoolVarArray(IsolateThread thread, int size) {
+        BoolVar[] array = new BoolVar[size];
+        ObjectHandle res = globalHandles.create(array);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "boolVar_set")
+    public static void setBoolVarArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                              ObjectHandle boolVarHandle, int index) {
+        BoolVar[] array = globalHandles.get(arrayHandle);
+        BoolVar var = globalHandles.get(boolVarHandle);
+        array[index] = var;
+    }
+
+    // Constraint Arrays
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "constraint_create")
+    public static ObjectHandle createConstraintArray(IsolateThread thread, int size) {
+        Constraint[] array = new Constraint[size];
+        ObjectHandle res = globalHandles.create(array);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "constraint_set")
+    public static void setConstraintArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                                 ObjectHandle constraintHandle, int index) {
+        Constraint[] array = globalHandles.get(arrayHandle);
+        Constraint cons = globalHandles.get(constraintHandle);
+        array[index] = cons;
+    }
+
 
     // Criterion Arrays
 

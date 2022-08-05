@@ -268,7 +268,7 @@ public class ConstraintApi {
         return res;
     }
 
-    // table TODO
+    // table TODO implement TuplesApi
 
     // times
 
@@ -373,13 +373,66 @@ public class ConstraintApi {
         return res;
     }
 
-    // allEqual TODO
+    // allEqual
 
-    // notAllEqual TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "all_equal")
+    public static ObjectHandle all_equal(IsolateThread thread, ObjectHandle modelHandle,
+                                         ObjectHandle intVarArrayHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVarArray = globalHandles.get(intVarArrayHandle);
+        Constraint allEqual = model.allEqual(intVarArray);
+        ObjectHandle res = globalHandles.create(allEqual);
+        return res;
+    }
 
-    // among TODO
+    // notAllEqual
 
-    // and TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "not_all_equal")
+    public static ObjectHandle not_all_equal(IsolateThread thread, ObjectHandle modelHandle,
+                                             ObjectHandle intVarArrayHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVarArray = globalHandles.get(intVarArrayHandle);
+        Constraint notAllEqual = model.notAllEqual(intVarArray);
+        ObjectHandle res = globalHandles.create(notAllEqual);
+        return res;
+    }
+
+    // among
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "among")
+    public static ObjectHandle among(IsolateThread thread, ObjectHandle modelHandle,
+                                             ObjectHandle nbVarHandle, ObjectHandle intVarArrayHandle,
+                                             ObjectHandle valuesHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar nbVar = globalHandles.get(nbVarHandle);
+        IntVar[] intVarArray = globalHandles.get(intVarArrayHandle);
+        int[] value = globalHandles.get(valuesHandle);
+        Constraint among = model.among(nbVar, intVarArray, value);
+        ObjectHandle res = globalHandles.create(among);
+        return res;
+    }
+
+    // and
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "and_bv_bv")
+    public static ObjectHandle and_bv_bv(IsolateThread thread, ObjectHandle modelHandle,
+                                   ObjectHandle boolVarArrayHandle) {
+        Model model = globalHandles.get(modelHandle);
+        BoolVar[] boolVars = globalHandles.get(boolVarArrayHandle);
+        Constraint and = model.and(boolVars);
+        ObjectHandle res = globalHandles.create(and);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "and_cs_cs")
+    public static ObjectHandle and_cs_cs(IsolateThread thread, ObjectHandle modelHandle,
+                                         ObjectHandle constraintArrayHandle) {
+        Model model = globalHandles.get(modelHandle);
+        Constraint[] constraints = globalHandles.get(constraintArrayHandle);
+        Constraint and = model.and(constraints);
+        ObjectHandle res = globalHandles.create(and);
+        return res;
+    }
 
     // atLeastNValues TODO
 
