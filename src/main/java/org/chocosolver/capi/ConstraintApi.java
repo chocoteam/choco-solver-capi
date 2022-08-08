@@ -2,6 +2,7 @@ package org.chocosolver.capi;
 
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
+import org.chocosolver.solver.constraints.nary.circuit.CircuitConf;
 import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
 import org.graalvm.nativeimage.IsolateThread;
@@ -434,37 +435,199 @@ public class ConstraintApi {
         return res;
     }
 
-    // atLeastNValues TODO
+    // atLeastNValues
 
-    // atMostNValues TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "atLeastNValues")
+    public static ObjectHandle atLeastNValues(IsolateThread thread, ObjectHandle modelHandle,
+                                              ObjectHandle intVarArrayHandle, ObjectHandle nValuesHandle, boolean AC) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intvars = globalHandles.get(intVarArrayHandle);
+        IntVar nValues = globalHandles.get(nValuesHandle);
+        Constraint atLeastNValues = model.atLeastNValues(intvars, nValues, AC);
+        ObjectHandle res = globalHandles.create(atLeastNValues);
+        return res;
+    }
 
-    // binPacking TODO
+    // atMostNValues
 
-    // boolsIntChanneling TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "atMostNValues")
+    public static ObjectHandle atMostNValues(IsolateThread thread, ObjectHandle modelHandle,
+                                              ObjectHandle intVarArrayHandle, ObjectHandle nValuesHandle,
+                                             boolean STRONG) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intvars = globalHandles.get(intVarArrayHandle);
+        IntVar nValues = globalHandles.get(nValuesHandle);
+        Constraint atMostNValues = model.atMostNValues(intvars, nValues, STRONG);
+        ObjectHandle res = globalHandles.create(atMostNValues);
+        return res;
+    }
 
-    // bitsIntChanneling TODO
+    // binPacking
 
-    // clausesIntChanneling TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "binPacking")
+    public static ObjectHandle binPacking(IsolateThread thread, ObjectHandle modelHandle,
+                                          ObjectHandle itemBinHandle, ObjectHandle itemSizeHandle,
+                                          ObjectHandle binLoadHandle, int offset) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] itemBin = globalHandles.get(itemBinHandle);
+        int[] itemSize = globalHandles.get(itemSizeHandle);
+        IntVar[] binLoad = globalHandles.get(binLoadHandle);
+        Constraint binPacking = model.binPacking(itemBin, itemSize, binLoad, offset);
+        ObjectHandle res = globalHandles.create(binPacking);
+        return res;
+    }
 
-    // circuit TODO
+    // boolsIntChanneling
 
-    // costRegular TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "boolsIntChanneling")
+    public static ObjectHandle boolsIntChanneling(IsolateThread thread, ObjectHandle modelHandle,
+                                                  ObjectHandle boolVarsHandle, ObjectHandle intVarHandle,
+                                                  int offset) {
+        Model model = globalHandles.get(modelHandle);
+        BoolVar[] boolVars = globalHandles.get(boolVarsHandle);
+        IntVar intVar = globalHandles.get(intVarHandle);
+        Constraint boolsIntChanneling = model.boolsIntChanneling(boolVars, intVar, offset);
+        ObjectHandle res = globalHandles.create(boolsIntChanneling);
+        return res;
+    }
 
-    // count TODO
+    // bitsIntChanneling
 
-    // cumulative TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "bitsIntChanneling")
+    public static ObjectHandle bitsIntChanneling(IsolateThread thread, ObjectHandle modelHandle,
+                                                 ObjectHandle boolVarsHandle, ObjectHandle intVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        BoolVar[] boolVars = globalHandles.get(boolVarsHandle);
+        IntVar intVar = globalHandles.get(intVarHandle);
+        Constraint bitsIntChanneling = model.bitsIntChanneling(boolVars, intVar);
+        ObjectHandle res = globalHandles.create(bitsIntChanneling);
+        return res;
+    }
 
-    // decreasing TODO
+    // clausesIntChanneling
 
-    // diffN TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "clausesIntChanneling")
+    public static ObjectHandle clausesIntChanneling(IsolateThread thread, ObjectHandle modelHandle,
+                                                    ObjectHandle intVarHandle, ObjectHandle eVarsHandle,
+                                                    ObjectHandle lVarsHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar intVar = globalHandles.get(intVarHandle);
+        BoolVar[] eVars = globalHandles.get(eVarsHandle);
+        BoolVar[] lVars = globalHandles.get(lVarsHandle);
+        Constraint clausesIntChanneling = model.clausesIntChanneling(intVar, eVars, lVars);
+        ObjectHandle res = globalHandles.create(clausesIntChanneling);
+        return res;
+    }
 
-    // element TODO
+    // circuit
 
-    // globalCardinality TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "circuit")
+    public static ObjectHandle circuit(IsolateThread thread, ObjectHandle modelHandle,
+                                       ObjectHandle intVarArrayHandle, int offset,
+                                       CCharPointer conf) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarArrayHandle);
+        String jConf = CTypeConversion.toJavaString(conf);
+        CircuitConf cConf;
+        switch (jConf) {
+            case "LIGHT":
+                cConf = CircuitConf.LIGHT;
+                break;
+            case "FIRST":
+                cConf = CircuitConf.FIRST;
+                break;
+            case "ALL":
+                cConf = CircuitConf.ALL;
+                break;
+            default:
+                cConf = CircuitConf.RD;
+                break;
+        }
+        Constraint circuit = model.circuit(intVars, offset, cConf);
+        ObjectHandle res = globalHandles.create(circuit);
+        return res;
+    }
 
-    // increasing TODO
+    // costRegular TODO ADD AUTOMATON API
 
-    // inverseChanneling TODO
+    // count
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "count_i")
+    public static ObjectHandle count_i(IsolateThread thread, ObjectHandle modelHandle,
+                                       int value, ObjectHandle intVarArrayHandle,
+                                       ObjectHandle limitHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarArrayHandle);
+        IntVar limit = globalHandles.get(limitHandle);
+        Constraint count = model.count(value, intVars, limit);
+        ObjectHandle res = globalHandles.create(count);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "count_iv")
+    public static ObjectHandle count_iv(IsolateThread thread, ObjectHandle modelHandle,
+                                        ObjectHandle valueHandle, ObjectHandle intVarArrayHandle,
+                                        ObjectHandle limitHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarArrayHandle);
+        IntVar value = globalHandles.get(valueHandle);
+        IntVar limit = globalHandles.get(limitHandle);
+        Constraint count = model.count(value, intVars, limit);
+        ObjectHandle res = globalHandles.create(count);
+        return res;
+    }
+
+    // cumulative TODO Implement task API
+
+    // decreasing TODO Seems absent in Choco
+
+    // diffN
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "diffN")
+    public static ObjectHandle diffN(IsolateThread thread, ObjectHandle modelHandle,
+                                     ObjectHandle XHandle, ObjectHandle YHandle,
+                                     ObjectHandle widthHandle, ObjectHandle heightHandle,
+                                     boolean addCumulativeReasoning) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] X = globalHandles.get(XHandle);
+        IntVar[] Y = globalHandles.get(YHandle);
+        IntVar[] width = globalHandles.get(widthHandle);
+        IntVar[] height = globalHandles.get(heightHandle);
+        Constraint diffN = model.diffN(X, Y, width, height, addCumulativeReasoning);
+        ObjectHandle res = globalHandles.create(diffN);
+        return res;
+    }
+
+    // globalCardinality
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "globalCardinality")
+    public static ObjectHandle globalCardinality(IsolateThread thread, ObjectHandle modelHandle,
+                                                 ObjectHandle intVarArrayHandle, ObjectHandle valuesHandle,
+                                                 ObjectHandle occurrencesHandle, boolean closed) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarArrayHandle);
+        IntVar[] occurrences = globalHandles.get(occurrencesHandle);
+        int[] values = globalHandles.get(valuesHandle);
+        Constraint gcc = model.globalCardinality(intVars, values, occurrences, closed);
+        ObjectHandle res = globalHandles.create(gcc);
+        return res;
+    }
+
+    // increasing TODO Seems absent in Choco
+
+    // inverseChanneling
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "inverseChanneling")
+    public static ObjectHandle inverseChanneling(IsolateThread thread, ObjectHandle modelHandle,
+                                                 ObjectHandle intVarArrayHandle1, ObjectHandle intVarArrayHandle2,
+                                                 int offset1, int offset2, boolean ac) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars1 = globalHandles.get(intVarArrayHandle1);
+        IntVar[] intVars2 = globalHandles.get(intVarArrayHandle2);
+        Constraint inverseChanneling = model.inverseChanneling(intVars1, intVars2, offset1, offset2, ac);
+        ObjectHandle res = globalHandles.create(inverseChanneling);
+        return res;
+    }
 
     // intValuePrecedeChain TODO
 
@@ -484,17 +647,37 @@ public class ConstraintApi {
 
     // argmin TODO
 
-    // mddc TODO
+    // mddc TODO Implement MDD Api
 
-    // multiCostRegular TODO
+    // multiCostRegular TODO Implement Automaton Api
 
     // nValues TODO
 
-    // or TODO
+    // or
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "or_bv_bv")
+    public static ObjectHandle or_bv_bv(IsolateThread thread, ObjectHandle modelHandle,
+                                        ObjectHandle boolVarArrayHandle) {
+        Model model = globalHandles.get(modelHandle);
+        BoolVar[] boolVars = globalHandles.get(boolVarArrayHandle);
+        Constraint or = model.or(boolVars);
+        ObjectHandle res = globalHandles.create(or);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "or_cs_cs")
+    public static ObjectHandle or_cs_cs(IsolateThread thread, ObjectHandle modelHandle,
+                                         ObjectHandle constraintArrayHandle) {
+        Model model = globalHandles.get(modelHandle);
+        Constraint[] constraints = globalHandles.get(constraintArrayHandle);
+        Constraint or = model.or(constraints);
+        ObjectHandle res = globalHandles.create(or);
+        return res;
+    }
 
     // path TODO
 
-    // regular TODO
+    // regular TODO Implement Automaton Api
 
     // scalar TODO
 
