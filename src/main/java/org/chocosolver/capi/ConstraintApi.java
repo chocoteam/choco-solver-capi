@@ -629,29 +629,133 @@ public class ConstraintApi {
         return res;
     }
 
-    // intValuePrecedeChain TODO
+    // intValuePrecedeChain TODO - add to python API
 
-    // knapsack TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intValuePrecedeChain")
+    public static ObjectHandle intValuePrecedeChain(IsolateThread thread, ObjectHandle modelHandle,
+                                                    ObjectHandle intVarArrayHandle, ObjectHandle VHanlde) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarArrayHandle);
+        int[] V = globalHandles.get(VHanlde);
+        Constraint intValuePrecedeChain = model.intValuePrecedeChain(intVars, V);
+        ObjectHandle res = globalHandles.create(intValuePrecedeChain);
+        return res;
+    }
 
-    // keySort TODO
+    // knapsack TODO - add to python API
 
-    // lexChainLess TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "knapsack")
+    public static ObjectHandle knapsack(IsolateThread thread, ObjectHandle modelHandle,
+                                        ObjectHandle occurrencesHandle, ObjectHandle weightSumHandle,
+                                        ObjectHandle energySumHandle, ObjectHandle weightHandle,
+                                        ObjectHandle energyHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] occurrences = globalHandles.get(occurrencesHandle);
+        IntVar weightSum = globalHandles.get(weightSumHandle);
+        IntVar energySum = globalHandles.get(energySumHandle);
+        int[] energy = globalHandles.get(energyHandle);
+        int[] weight = globalHandles.get(weightHandle);
+        Constraint knapsack = model.knapsack(occurrences, weightSum, energySum, weight, energy);
+        ObjectHandle res = globalHandles.create(knapsack);
+        return res;
+    }
 
-    // lexChainLessEq TODO
+    // keySort TODO - ADD MATRIX API
 
-    // lexLess TODO
+    // lexChainLess TODO - add to python API
 
-    // lexLessEq TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "lexChainLess")
+    public static ObjectHandle lexChainLess(IsolateThread thread, ObjectHandle modelHandle,
+                                            ObjectHandle intVarsHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        Constraint lexChainLess = model.lexChainLess(intVars);
+        ObjectHandle res = globalHandles.create(lexChainLess);
+        return res;
+    }
 
-    // argmax TODO
+    // lexChainLessEq TODO - add to python API
 
-    // argmin TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "lexChainLessEq")
+    public static ObjectHandle lexChainLessEq(IsolateThread thread, ObjectHandle modelHandle,
+                                              ObjectHandle intVarsHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        Constraint lexChainLessEq = model.lexChainLessEq(intVars);
+        ObjectHandle res = globalHandles.create(lexChainLessEq);
+        return res;
+    }
+
+    // lexLess TODO - add to python API
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "lexLess")
+    public static ObjectHandle lexLess(IsolateThread thread, ObjectHandle modelHandle,
+                                              ObjectHandle intVarsHandle1, ObjectHandle intVarsHandle2) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars1 = globalHandles.get(intVarsHandle1);
+        IntVar[] intVars2 = globalHandles.get(intVarsHandle2);
+        Constraint lexLess = model.lexLess(intVars1, intVars2);
+        ObjectHandle res = globalHandles.create(lexLess);
+        return res;
+    }
+
+    // lexLessEq TODO - add to python API
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "lexLessEq")
+    public static ObjectHandle lexLessEq(IsolateThread thread, ObjectHandle modelHandle,
+                                         ObjectHandle intVarsHandle1, ObjectHandle intVarsHandle2) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars1 = globalHandles.get(intVarsHandle1);
+        IntVar[] intVars2 = globalHandles.get(intVarsHandle2);
+        Constraint lexLessEq = model.lexLessEq(intVars1, intVars2);
+        ObjectHandle res = globalHandles.create(lexLessEq);
+        return res;
+    }
+
+    // argmax TODO - add to python API
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "argmax")
+    public static ObjectHandle argmax(IsolateThread thread, ObjectHandle modelHandle,
+                                      ObjectHandle intVarHandle, int offset,
+                                      ObjectHandle intVarArrayHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar intVar = globalHandles.get(intVarHandle);
+        IntVar[] intVars = globalHandles.get(intVarArrayHandle);
+        Constraint argmax = model.argmax(intVar, offset, intVars);
+        ObjectHandle res = globalHandles.create(argmax);
+        return res;
+    }
+
+    // argmin TODO - add to python API
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "argmin")
+    public static ObjectHandle argmin(IsolateThread thread, ObjectHandle modelHandle,
+                                      ObjectHandle intVarHandle, int offset,
+                                      ObjectHandle intVarArrayHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar intVar = globalHandles.get(intVarHandle);
+        IntVar[] intVars = globalHandles.get(intVarArrayHandle);
+        Constraint argmin = model.argmin(intVar, offset, intVars);
+        ObjectHandle res = globalHandles.create(argmin);
+        return res;
+    }
 
     // mddc TODO Implement MDD Api
 
     // multiCostRegular TODO Implement Automaton Api
 
-    // nValues TODO
+    // nValues TODO - add to python API
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "nValues")
+    public static ObjectHandle nValues(IsolateThread thread, ObjectHandle modelHandle,
+                                       ObjectHandle intVarArrayHandle, ObjectHandle nValuesHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarArrayHandle);
+        IntVar nValues = globalHandles.get(nValuesHandle);
+        Constraint nValuesConstraint = model.nValues(intVars, nValues);
+        ObjectHandle res = globalHandles.create(nValuesConstraint);
+        return res;
+    }
 
     // or
 
@@ -675,21 +779,168 @@ public class ConstraintApi {
         return res;
     }
 
-    // path TODO
+    // path TODO - add to python API
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "path")
+    public static ObjectHandle path(IsolateThread thread, ObjectHandle modelHandle,
+                                    ObjectHandle intVarArrayHandle, ObjectHandle startHandle,
+                                    ObjectHandle endHandle, int offset) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarArrayHandle);
+        IntVar start = globalHandles.get(startHandle);
+        IntVar end = globalHandles.get(endHandle);
+        Constraint path = model.path(intVars, start, end, offset);
+        ObjectHandle res = globalHandles.create(path);
+        return res;
+    }
 
     // regular TODO Implement Automaton Api
 
-    // scalar TODO
+    // scalar TODO - add to python API
 
-    // sort TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "scalar_i")
+    public static ObjectHandle scalar_i(IsolateThread thread, ObjectHandle modelHandle,
+                                        ObjectHandle intVarArrayHandle, ObjectHandle coeffsHandle,
+                                        CCharPointer operator, int scalar) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarArrayHandle);
+        int[] coeffs = globalHandles.get(coeffsHandle);
+        String op = CTypeConversion.toJavaString(operator);
+        Constraint scalarConstraint = model.scalar(intVars, coeffs, op, scalar);
+        ObjectHandle res = globalHandles.create(scalarConstraint);
+        return res;
+    }
 
-    // subCircuit TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "scalar_iv")
+    public static ObjectHandle scalar_iv(IsolateThread thread, ObjectHandle modelHandle,
+                                        ObjectHandle intVarArrayHandle, ObjectHandle coeffsHandle,
+                                        CCharPointer operator, ObjectHandle scalarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarArrayHandle);
+        IntVar scalar = globalHandles.get(scalarHandle);
+        int[] coeffs = globalHandles.get(coeffsHandle);
+        String op = CTypeConversion.toJavaString(operator);
+        Constraint scalarConstraint = model.scalar(intVars, coeffs, op, scalar);
+        ObjectHandle res = globalHandles.create(scalarConstraint);
+        return res;
+    }
 
-    // subPath TODO
+    // sort TODO - add to python API
 
-    // sum TODO
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "sort")
+    public static ObjectHandle sort(IsolateThread thread, ObjectHandle modelHandle,
+                                    ObjectHandle intVarsHandle, ObjectHandle sortedIntVarsHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        IntVar[] sortedIntVars = globalHandles.get(sortedIntVarsHandle);
+        Constraint sorted = model.sort(intVars, sortedIntVars);
+        ObjectHandle res = globalHandles.create(sorted);
+        return res;
+    }
 
-    // tree TODO
+    // subCircuit TODO - add to python API
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "subCircuit")
+    public static ObjectHandle subCircuit(IsolateThread thread, ObjectHandle modelHandle,
+                                          ObjectHandle intVarsHandle, int offset,
+                                          ObjectHandle subCircuitLengthHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        IntVar subCircuitLength = globalHandles.get(subCircuitLengthHandle);
+        Constraint subcircuit = model.subCircuit(intVars, offset, subCircuitLength);
+        ObjectHandle res = globalHandles.create(subcircuit);
+        return res;
+    }
+
+    // subPath TODO - add to python API
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "subPath")
+    public static ObjectHandle subPath(IsolateThread thread, ObjectHandle modelHandle,
+                                       ObjectHandle intVarsHandle, ObjectHandle startHandle,
+                                       ObjectHandle endHandle, int offset, ObjectHandle sizeHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        IntVar start = globalHandles.get(startHandle);
+        IntVar end = globalHandles.get(endHandle);
+        IntVar size = globalHandles.get(sizeHandle);
+        Constraint subPath = model.subPath(intVars, start, end, offset, size);
+        ObjectHandle res = globalHandles.create(subPath);
+        return res;
+    }
+
+    // sum TODO - add to python API
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "sum_iv_i")
+    public static ObjectHandle sum_iv_i(IsolateThread thread, ObjectHandle modelHandle,
+                                   ObjectHandle intVarsHandle, CCharPointer operator, int sum) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        String op = CTypeConversion.toJavaString(operator);
+        Constraint sumConstraint = model.sum(intVars, op, sum);
+        ObjectHandle res = globalHandles.create(sumConstraint);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "sum_iv_iv")
+    public static ObjectHandle sum_iv_iv(IsolateThread thread, ObjectHandle modelHandle,
+                                   ObjectHandle intVarsHandle, CCharPointer operator, ObjectHandle sumHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        IntVar sum = globalHandles.get(sumHandle);
+        String op = CTypeConversion.toJavaString(operator);
+        Constraint sumConstraint = model.sum(intVars, op, sum);
+        ObjectHandle res = globalHandles.create(sumConstraint);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "sum_ivarray_ivarray")
+    public static ObjectHandle sum_ivarray_ivarray(IsolateThread thread, ObjectHandle modelHandle,
+                                                   ObjectHandle intVarsHandle, CCharPointer operator,
+                                                   ObjectHandle sumHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        IntVar[] sum = globalHandles.get(sumHandle);
+        String op = CTypeConversion.toJavaString(operator);
+        Constraint sumConstraint = model.sum(intVars, op, sum);
+        ObjectHandle res = globalHandles.create(sumConstraint);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "sum_bv_i")
+    public static ObjectHandle sum_bv_i(IsolateThread thread, ObjectHandle modelHandle,
+                                        ObjectHandle boolVarsHandle, CCharPointer operator, int sum) {
+        Model model = globalHandles.get(modelHandle);
+        BoolVar[] boolVars = globalHandles.get(boolVarsHandle);
+        String op = CTypeConversion.toJavaString(operator);
+        Constraint sumConstraint = model.sum(boolVars, op, sum);
+        ObjectHandle res = globalHandles.create(sumConstraint);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "sum_bv_iv")
+    public static ObjectHandle sum_bv_iv(IsolateThread thread, ObjectHandle modelHandle,
+                                         ObjectHandle boolVarsHandle, CCharPointer operator, ObjectHandle sumHandle) {
+        Model model = globalHandles.get(modelHandle);
+        BoolVar[] boolVars = globalHandles.get(boolVarsHandle);
+        IntVar sum = globalHandles.get(sumHandle);
+        String op = CTypeConversion.toJavaString(operator);
+        Constraint sumConstraint = model.sum(boolVars, op, sum);
+        ObjectHandle res = globalHandles.create(sumConstraint);
+        return res;
+    }
+
+    // tree TODO - add to python API
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "tree")
+    public static ObjectHandle tree(IsolateThread thread, ObjectHandle modelHandle,
+                                         ObjectHandle succsHandle, ObjectHandle nbTreeHandle, int offset) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] succs = globalHandles.get(succsHandle);
+        IntVar nbTree = globalHandles.get(nbTreeHandle);
+        Constraint tree = model.tree(succs, nbTree, offset);
+        ObjectHandle res = globalHandles.create(tree);
+        return res;
+    }
 
     // -------------- //
     // Object methods //
