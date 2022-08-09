@@ -629,7 +629,7 @@ public class ConstraintApi {
         return res;
     }
 
-    // intValuePrecedeChain TODO - add to python API
+    // intValuePrecedeChain
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intValuePrecedeChain")
     public static ObjectHandle intValuePrecedeChain(IsolateThread thread, ObjectHandle modelHandle,
@@ -642,7 +642,7 @@ public class ConstraintApi {
         return res;
     }
 
-    // knapsack TODO - add to python API
+    // knapsack
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "knapsack")
     public static ObjectHandle knapsack(IsolateThread thread, ObjectHandle modelHandle,
@@ -662,7 +662,7 @@ public class ConstraintApi {
 
     // keySort TODO - ADD MATRIX API
 
-    // lexChainLess TODO - add to python API
+    // lexChainLess
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "lexChainLess")
     public static ObjectHandle lexChainLess(IsolateThread thread, ObjectHandle modelHandle,
@@ -674,7 +674,7 @@ public class ConstraintApi {
         return res;
     }
 
-    // lexChainLessEq TODO - add to python API
+    // lexChainLessEq
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "lexChainLessEq")
     public static ObjectHandle lexChainLessEq(IsolateThread thread, ObjectHandle modelHandle,
@@ -686,7 +686,7 @@ public class ConstraintApi {
         return res;
     }
 
-    // lexLess TODO - add to python API
+    // lexLess
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "lexLess")
     public static ObjectHandle lexLess(IsolateThread thread, ObjectHandle modelHandle,
@@ -699,7 +699,7 @@ public class ConstraintApi {
         return res;
     }
 
-    // lexLessEq TODO - add to python API
+    // lexLessEq
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "lexLessEq")
     public static ObjectHandle lexLessEq(IsolateThread thread, ObjectHandle modelHandle,
@@ -712,7 +712,7 @@ public class ConstraintApi {
         return res;
     }
 
-    // argmax TODO - add to python API
+    // argmax
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "argmax")
     public static ObjectHandle argmax(IsolateThread thread, ObjectHandle modelHandle,
@@ -726,7 +726,7 @@ public class ConstraintApi {
         return res;
     }
 
-    // argmin TODO - add to python API
+    // argmin
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "argmin")
     public static ObjectHandle argmin(IsolateThread thread, ObjectHandle modelHandle,
@@ -744,7 +744,7 @@ public class ConstraintApi {
 
     // multiCostRegular TODO Implement Automaton Api
 
-    // nValues TODO - add to python API
+    // nValues
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "nValues")
     public static ObjectHandle nValues(IsolateThread thread, ObjectHandle modelHandle,
@@ -779,7 +779,7 @@ public class ConstraintApi {
         return res;
     }
 
-    // path TODO - add to python API
+    // path
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "path")
     public static ObjectHandle path(IsolateThread thread, ObjectHandle modelHandle,
@@ -796,7 +796,7 @@ public class ConstraintApi {
 
     // regular TODO Implement Automaton Api
 
-    // scalar TODO - add to python API
+    // scalar
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "scalar_i")
     public static ObjectHandle scalar_i(IsolateThread thread, ObjectHandle modelHandle,
@@ -825,7 +825,7 @@ public class ConstraintApi {
         return res;
     }
 
-    // sort TODO - add to python API
+    // sort
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "sort")
     public static ObjectHandle sort(IsolateThread thread, ObjectHandle modelHandle,
@@ -838,7 +838,7 @@ public class ConstraintApi {
         return res;
     }
 
-    // subCircuit TODO - add to python API
+    // subCircuit
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "subCircuit")
     public static ObjectHandle subCircuit(IsolateThread thread, ObjectHandle modelHandle,
@@ -852,7 +852,7 @@ public class ConstraintApi {
         return res;
     }
 
-    // subPath TODO - add to python API
+    // subPath
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "subPath")
     public static ObjectHandle subPath(IsolateThread thread, ObjectHandle modelHandle,
@@ -868,11 +868,11 @@ public class ConstraintApi {
         return res;
     }
 
-    // sum TODO - add to python API
+    // sum
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "sum_iv_i")
     public static ObjectHandle sum_iv_i(IsolateThread thread, ObjectHandle modelHandle,
-                                   ObjectHandle intVarsHandle, CCharPointer operator, int sum) {
+                                   	ObjectHandle intVarsHandle, CCharPointer operator, int sum) {
         Model model = globalHandles.get(modelHandle);
         IntVar[] intVars = globalHandles.get(intVarsHandle);
         String op = CTypeConversion.toJavaString(operator);
@@ -883,7 +883,7 @@ public class ConstraintApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "sum_iv_iv")
     public static ObjectHandle sum_iv_iv(IsolateThread thread, ObjectHandle modelHandle,
-                                   ObjectHandle intVarsHandle, CCharPointer operator, ObjectHandle sumHandle) {
+                                   	 ObjectHandle intVarsHandle, CCharPointer operator, ObjectHandle sumHandle) {
         Model model = globalHandles.get(modelHandle);
         IntVar[] intVars = globalHandles.get(intVarsHandle);
         IntVar sum = globalHandles.get(sumHandle);
@@ -929,11 +929,11 @@ public class ConstraintApi {
         return res;
     }
 
-    // tree TODO - add to python API
+    // tree
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "tree")
     public static ObjectHandle tree(IsolateThread thread, ObjectHandle modelHandle,
-                                         ObjectHandle succsHandle, ObjectHandle nbTreeHandle, int offset) {
+                                    ObjectHandle succsHandle, ObjectHandle nbTreeHandle, int offset) {
         Model model = globalHandles.get(modelHandle);
         IntVar[] succs = globalHandles.get(succsHandle);
         IntVar nbTree = globalHandles.get(nbTreeHandle);

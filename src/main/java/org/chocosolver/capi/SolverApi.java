@@ -86,4 +86,10 @@ public class SolverApi {
         Solver solver = globalHandles.get(solverHandler);
         solver.showShortStatistics();
     }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "getSolutionCount")
+    public static long getSolutionCount(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        return solver.getSolutionCount();
+    }
 }
