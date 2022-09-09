@@ -2,6 +2,7 @@ package org.chocosolver.capi;
 
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
+import org.chocosolver.solver.constraints.extension.Tuples;
 import org.chocosolver.solver.constraints.nary.circuit.CircuitConf;
 import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
@@ -270,6 +271,18 @@ public class ConstraintApi {
     }
 
     // table TODO implement TuplesApi
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "table")
+    public static ObjectHandle table(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle varsHandle,
+                                     ObjectHandle tuplesHandle, CCharPointer algo) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] vars = globalHandles.get(varsHandle);
+        Tuples tuples = globalHandles.get(tuplesHandle);
+        String algoS = CTypeConversion.toJavaString(algo);
+        Constraint table = model.table(vars, tuples, algoS);
+        ObjectHandle res = globalHandles.create(table);
+        return res;
+    }
 
     // times
 
