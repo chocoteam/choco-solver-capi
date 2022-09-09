@@ -169,7 +169,7 @@ public class AutomatonApi {
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "cost_fa_add_counter")
     public static void costFaAddCounter(IsolateThread thread, ObjectHandle costFaHandle,
                                         ObjectHandle counterHandle) {
-        CostAutomaton costFa = globalHandles.get(counterHandle);
+        CostAutomaton costFa = globalHandles.get(costFaHandle);
         ICounter counter = globalHandles.get(counterHandle);
         costFa.addCounter(counter);
     }
