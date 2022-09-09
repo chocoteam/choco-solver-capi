@@ -274,12 +274,13 @@ public class ConstraintApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "table")
     public static ObjectHandle table(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle varsHandle,
-                                     ObjectHandle tuplesHandle, CCharPointer algo) {
+                                     ObjectHandle tuplesHandle, boolean feasible, CCharPointer algo) {
         Model model = globalHandles.get(modelHandle);
         IntVar[] vars = globalHandles.get(varsHandle);
-        Tuples tuples = globalHandles.get(tuplesHandle);
+        int[][] tuples = globalHandles.get(tuplesHandle);
         String algoS = CTypeConversion.toJavaString(algo);
-        Constraint table = model.table(vars, tuples, algoS);
+        Tuples tuplesObject = new Tuples(tuples, feasible);
+        Constraint table = model.table(vars, tuplesObject, algoS);
         ObjectHandle res = globalHandles.create(table);
         return res;
     }
