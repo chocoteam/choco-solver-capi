@@ -6,6 +6,7 @@ import org.chocosolver.solver.constraints.extension.Tuples;
 import org.chocosolver.solver.constraints.nary.circuit.CircuitConf;
 import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.constraints.nary.automata.FA.ICostAutomaton;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.ObjectHandles;
@@ -570,6 +571,20 @@ public class ConstraintApi {
     }
 
     // costRegular TODO ADD AUTOMATON API
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "cost_regular")
+    public static ObjectHandle cost_regular(IsolateThread thread, ObjectHandle modelHandle,
+                                            ObjectHandle intVarsHandle, ObjectHandle costHandle,
+                                            ObjectHandle costAutomatonHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        IntVar cost = globalHandles.get(costHandle);
+        ICostAutomaton costAutomaton = globalHandles.get(costAutomatonHandle);
+        Constraint costRegular = model.costRegular(intvars, cost, costAutomaton);
+        ObjectHandle res = globalHandles.create(costRegular);
+        return res;
+    }
+
 
     // count
 
