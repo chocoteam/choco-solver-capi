@@ -320,7 +320,16 @@ public class ConstraintApi {
         return res;
     }
 
-    // pow TODO seems absent in Choco
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "pow")
+    public static ObjectHandle pow(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle intVarHandle1,
+                                   int c, ObjectHandle intVarHandle2) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar X = globalHandles.get(intVarHandle1);
+        IntVar Y = globalHandles.get(intVarHandle2);
+        Constraint pow = model.pow(X, c, Y);
+        ObjectHandle res = globalHandles.create(pow);
+        return res;
+    }
 
     // div
 
@@ -591,7 +600,15 @@ public class ConstraintApi {
 
     // cumulative TODO Implement task API
 
-    // decreasing TODO Seems absent in Choco
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "decreasing")
+    public static ObjectHandle decreasing(IsolateThread thread, ObjectHandle modelHandle,
+                                          ObjectHandle intVarsHandle, int delta) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        Constraint decreasing = model.decreasing(intVars, delta);
+        ObjectHandle res = globalHandles.create(decreasing);
+        return res;
+    }
 
     // diffN
 
@@ -625,7 +642,16 @@ public class ConstraintApi {
         return res;
     }
 
-    // increasing TODO Seems absent in Choco
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "increasing")
+    public static ObjectHandle increasing(IsolateThread thread, ObjectHandle modelHandle,
+                                          ObjectHandle intVarsHandle, int delta) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        Constraint increasing = model.increasing(intVars, delta);
+        ObjectHandle res = globalHandles.create(increasing);
+        return res;
+    }
+
 
     // inverseChanneling
 

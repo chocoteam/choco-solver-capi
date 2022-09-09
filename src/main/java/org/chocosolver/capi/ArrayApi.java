@@ -48,7 +48,7 @@ public class ArrayApi {
         return array.length;
     }
 
-    // Array of int Array
+    // int[][]
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_create")
     public static ObjectHandle createIntArrayArray(IsolateThread thread, int size) {
@@ -76,6 +76,38 @@ public class ArrayApi {
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_length")
     public static int getIntArrayArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
         int[][] array = globalHandles.get(arrayHandle);
+        return array.length;
+    }
+
+    // int[][][]
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_array_create")
+    public static ObjectHandle createIntArrayArrayArray(IsolateThread thread, int size) {
+        int[][][] array = new int[size][][];
+        ObjectHandle res = globalHandles.create(array);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_array_set")
+    public static void setIntArrayArrayArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                                    ObjectHandle elementHandle, int index) {
+        int[][][] array = globalHandles.get(arrayHandle);
+        int[][] element = globalHandles.get(elementHandle);
+        array[index] = element;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_array_get")
+    public static ObjectHandle getIntArrayArrayArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                                            int index) {
+        int[][][] array = globalHandles.get(arrayHandle);
+        int[][] element = array[index];
+        ObjectHandle res = globalHandles.create(element);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_array_length")
+    public static int getIntArrayArrayArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
+        int[][][] array = globalHandles.get(arrayHandle);
         return array.length;
     }
 
