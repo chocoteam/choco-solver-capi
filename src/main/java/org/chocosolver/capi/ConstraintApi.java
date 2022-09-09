@@ -580,7 +580,7 @@ public class ConstraintApi {
         IntVar[] intVars = globalHandles.get(intVarsHandle);
         IntVar cost = globalHandles.get(costHandle);
         ICostAutomaton costAutomaton = globalHandles.get(costAutomatonHandle);
-        Constraint costRegular = model.costRegular(intvars, cost, costAutomaton);
+        Constraint costRegular = model.costRegular(intVars, cost, costAutomaton);
         ObjectHandle res = globalHandles.create(costRegular);
         return res;
     }
