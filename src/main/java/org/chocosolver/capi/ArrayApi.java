@@ -48,6 +48,37 @@ public class ArrayApi {
         return array.length;
     }
 
+    // Array of int Array
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_create")
+    public static ObjectHandle createIntArrayArray(IsolateThread thread, int size) {
+        int[][] array = new int[size][];
+        ObjectHandle res = globalHandles.create(array);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_set")
+    public static void setIntArrayArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                             ObjectHandle elementHandle, int index) {
+        int[][] array = globalHandles.get(arrayHandle);
+        int[] element = globalHandles.get(elementHandle);
+        array[index] = element;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_get")
+    public static ObjectHandle getIntArrayArrayElement(IsolateThread thread, ObjectHandle arrayHandle, int index) {
+        int[][] array = globalHandles.get(arrayHandle);
+        int[] element = array[index];
+        ObjectHandle res = globalHandles.create(element);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_length")
+    public static int getIntArrayArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
+        int[][] array = globalHandles.get(arrayHandle);
+        return array.length;
+    }
+
     // IntVar Arrays
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_create")

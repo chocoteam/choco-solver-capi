@@ -270,8 +270,6 @@ public class ConstraintApi {
         return res;
     }
 
-    // table TODO implement TuplesApi
-
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "table")
     public static ObjectHandle table(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle varsHandle,
                                      ObjectHandle tuplesHandle, boolean feasible, CCharPointer algo) {
