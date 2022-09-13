@@ -6,6 +6,7 @@ import org.chocosolver.solver.constraints.extension.Tuples;
 import org.chocosolver.solver.constraints.nary.circuit.CircuitConf;
 import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.constraints.nary.automata.FA.IAutomaton;
 import org.chocosolver.solver.constraints.nary.automata.FA.ICostAutomaton;
 import org.chocosolver.solver.variables.Task;
 import org.graalvm.nativeimage.IsolateThread;
@@ -866,7 +867,7 @@ public class ConstraintApi {
                                        ObjectHandle intVarsHandle, ObjectHandle automatonHandle) {
         Model model = globalHandles.get(modelHandle);
         IntVar[] intVars = globalHandles.get(intVarsHandle);
-        ICostAutomaton automaton = globalHandles.get(automatonHandle);
+        IAutomaton automaton = globalHandles.get(automatonHandle);
         Constraint regular = model.regular(intVars, automaton);
         ObjectHandle res = globalHandles.create(regular);
         return res;
