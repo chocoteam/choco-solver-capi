@@ -48,8 +48,8 @@ public class TaskApi {
         return res;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_iv_i_iv")
-    public static ObjectHandle createTask_iv_i_iv(IsolateThread thread, ObjectHandle intVarHandle,
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_iv_iv_iv")
+    public static ObjectHandle createTask_iv_iv_iv(IsolateThread thread, ObjectHandle intVarHandle,
                                                   ObjectHandle intVarHandle2, ObjectHandle intVarHandle3) {
         IntVar s = globalHandles.get(intVarHandle);
         IntVar d = globalHandles.get(intVarHandle2);
