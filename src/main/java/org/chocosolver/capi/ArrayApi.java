@@ -3,6 +3,7 @@ package org.chocosolver.capi;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.variables.Task;
 import org.chocosolver.util.criteria.Criterion;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
@@ -139,6 +140,37 @@ public class ArrayApi {
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_length")
     public static int getIntVarArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
         IntVar[] array = globalHandles.get(arrayHandle);
+        return array.length;
+    }
+
+    // Tasks Arrays
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "task_create")
+    public static ObjectHandle createTaskArray(IsolateThread thread, int size) {
+        Task[] array = new Task[size];
+        ObjectHandle res = globalHandles.create(array);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "task_set")
+    public static void setTaskArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                           ObjectHandle taskHandle, int index) {
+        Task[] array = globalHandles.get(arrayHandle);
+        Task task = globalHandles.get(taskHandle);
+        array[index] = task;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "task_get")
+    public static ObjectHandle getTaskArrayElement(IsolateThread thread, ObjectHandle arrayHandle, int index) {
+        Task[] array = globalHandles.get(arrayHandle);
+        Task task = array[index];
+        ObjectHandle res = globalHandles.create(task);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "task_length")
+    public static int getTaskArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
+        Task[] array = globalHandles.get(arrayHandle);
         return array.length;
     }
 

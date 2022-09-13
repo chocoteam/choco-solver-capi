@@ -7,6 +7,7 @@ import org.chocosolver.solver.constraints.nary.circuit.CircuitConf;
 import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.constraints.nary.automata.FA.ICostAutomaton;
+import org.chocosolver.solver.variables.Task;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.ObjectHandles;
@@ -570,7 +571,7 @@ public class ConstraintApi {
         return res;
     }
 
-    // costRegular TODO ADD AUTOMATON API
+    // costRegular
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "cost_regular")
     public static ObjectHandle cost_regular(IsolateThread thread, ObjectHandle modelHandle,
@@ -584,7 +585,6 @@ public class ConstraintApi {
         ObjectHandle res = globalHandles.create(costRegular);
         return res;
     }
-
 
     // count
 
@@ -614,6 +614,18 @@ public class ConstraintApi {
     }
 
     // cumulative TODO Implement task API
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "cumulative")
+    public static ObjectHandle cumulative(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle tasksHandle,
+                                          ObjectHandle heightsHandle, ObjectHandle capacityHandle, boolean incr) {
+        Model model = globalHandles.get(modelHandle);
+        Task[] tasks = globalHandles.get(tasksHandle);
+        IntVar[] heights = globalHandles.get(heightsHandle);
+        IntVar capacity = globalHandles.get(capacityHandle);
+        Constraint cumulative = model.cumulative(tasks, heights, capacity, incr);
+        ObjectHandle res = globalHandles.create(cumulative);
+        return res;
+    }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "decreasing")
     public static ObjectHandle decreasing(IsolateThread thread, ObjectHandle modelHandle,
@@ -848,6 +860,17 @@ public class ConstraintApi {
     }
 
     // regular TODO Implement Automaton Api
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "regular")
+    public static ObjectHandle regular(IsolateThread thread, ObjectHandle modelHandle,
+                                       ObjectHandle intVarsHandle, ObjectHandle automatonHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        ICostAutomaton automaton = globalHandles.get(automatonHandle);
+        Constraint regular = model.regular(intVars, automaton);
+        ObjectHandle res = globalHandles.create(regular);
+        return res;
+    }
 
     // scalar
 
