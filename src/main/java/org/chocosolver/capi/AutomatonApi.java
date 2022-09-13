@@ -15,6 +15,8 @@ import org.graalvm.nativeimage.c.type.CTypeConversion;
 
 import java.util.List;
 
+import static org.chocosolver.solver.constraints.nary.automata.FA.CostAutomaton.makeSingleResource;
+
 /**
  * C entrypoint API to manipulate Java arrays.
  * @author Dimitri Justeau-Allaire.
@@ -223,4 +225,27 @@ public class AutomatonApi {
         ObjectHandle res = globalHandles.create(counter);
         return res;
     }
+
+    // Make resources
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "make_single_resource_iii")
+    public static ObjectHandle makeSingleResourceIii(IsolateThread thread, ObjectHandle automatonHandle,
+                                                     ObjectHandle costsHandle, int inf, int sup) {
+        int[][][] costs = globalHandles.get(costFaHandle);
+        IAutomaton auto = globalHandles.get(automatonHandle);
+        CostAutomaton costAuto = (CostAutomaton) makeSingleResource(auto, costs, inf, sup)
+        ObjectHandle res = globalHandles.create(costAuto)
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "make_single_resource_ii")
+    public static ObjectHandle makeSingleResourceIi(IsolateThread thread, ObjectHandle automatonHandle,
+                                                    ObjectHandle costsHandle, int inf, int sup) {
+        int[][] costs = globalHandles.get(costFaHandle);
+        IAutomaton auto = globalHandles.get(automatonHandle);
+        CostAutomaton costAuto = (CostAutomaton) makeSingleResource(auto, costs, inf, sup)
+        ObjectHandle res = globalHandles.create(costAuto)
+        return res;
+    }
+
 }
