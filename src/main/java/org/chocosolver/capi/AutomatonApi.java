@@ -233,8 +233,8 @@ public class AutomatonApi {
                                                      ObjectHandle costsHandle, int inf, int sup) {
         int[][][] costs = globalHandles.get(costFaHandle);
         IAutomaton auto = globalHandles.get(automatonHandle);
-        CostAutomaton costAuto = (CostAutomaton) makeSingleResource(auto, costs, inf, sup)
-        ObjectHandle res = globalHandles.create(costAuto)
+        CostAutomaton costAuto = (CostAutomaton) makeSingleResource(auto, costs, inf, sup);
+        ObjectHandle res = globalHandles.create(costAuto);
         return res;
     }
 
@@ -243,8 +243,8 @@ public class AutomatonApi {
                                                     ObjectHandle costsHandle, int inf, int sup) {
         int[][] costs = globalHandles.get(costFaHandle);
         IAutomaton auto = globalHandles.get(automatonHandle);
-        CostAutomaton costAuto = (CostAutomaton) makeSingleResource(auto, costs, inf, sup)
-        ObjectHandle res = globalHandles.create(costAuto)
+        CostAutomaton costAuto = (CostAutomaton) makeSingleResource(auto, costs, inf, sup);
+        ObjectHandle res = globalHandles.create(costAuto);
         return res;
     }
 
