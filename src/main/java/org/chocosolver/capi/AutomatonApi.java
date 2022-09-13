@@ -231,7 +231,7 @@ public class AutomatonApi {
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "make_single_resource_iii")
     public static ObjectHandle makeSingleResourceIii(IsolateThread thread, ObjectHandle automatonHandle,
                                                      ObjectHandle costsHandle, int inf, int sup) {
-        int[][][] costs = globalHandles.get(costFaHandle);
+        int[][][] costs = globalHandles.get(costsHandle);
         IAutomaton auto = globalHandles.get(automatonHandle);
         CostAutomaton costAuto = (CostAutomaton) makeSingleResource(auto, costs, inf, sup);
         ObjectHandle res = globalHandles.create(costAuto);
@@ -241,7 +241,7 @@ public class AutomatonApi {
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "make_single_resource_ii")
     public static ObjectHandle makeSingleResourceIi(IsolateThread thread, ObjectHandle automatonHandle,
                                                     ObjectHandle costsHandle, int inf, int sup) {
-        int[][] costs = globalHandles.get(costFaHandle);
+        int[][] costs = globalHandles.get(costsHandle);
         IAutomaton auto = globalHandles.get(automatonHandle);
         CostAutomaton costAuto = (CostAutomaton) makeSingleResource(auto, costs, inf, sup);
         ObjectHandle res = globalHandles.create(costAuto);
