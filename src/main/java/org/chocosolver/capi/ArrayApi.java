@@ -143,6 +143,37 @@ public class ArrayApi {
         return array.length;
     }
 
+    // IntVar array of array
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_array_create")
+    public static ObjectHandle createIntVarArrayArray(IsolateThread thread, int size) {
+        IntVar[][] array = new IntVar[size][];
+        ObjectHandle res = globalHandles.create(array);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_array_set")
+    public static void setIntVarArrayArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                                  ObjectHandle intVarArrayHandle, int index) {
+        IntVar[][] array = globalHandles.get(arrayHandle);
+        IntVar[] element = globalHandles.get(intVarArrayHandle);
+        array[index] = element;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_array_get")
+    public static ObjectHandle getIntVarArrayArrayElement(IsolateThread thread, ObjectHandle arrayHandle, int index) {
+        IntVar[][] array = globalHandles.get(arrayHandle);
+        IntVar[] var = array[index];
+        ObjectHandle res = globalHandles.create(var);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_array_length")
+    public static int getIntVarArrayArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
+        IntVar[][] array = globalHandles.get(arrayHandle);
+        return array.length;
+    }
+
     // Tasks Arrays
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "task_create")

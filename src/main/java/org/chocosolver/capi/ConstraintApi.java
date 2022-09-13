@@ -614,8 +614,6 @@ public class ConstraintApi {
         return res;
     }
 
-    // cumulative TODO Implement task API
-
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "cumulative")
     public static ObjectHandle cumulative(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle tasksHandle,
                                           ObjectHandle heightsHandle, ObjectHandle capacityHandle, boolean incr) {
@@ -727,6 +725,18 @@ public class ConstraintApi {
     }
 
     // keySort TODO - ADD MATRIX API
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "keysort")
+    public static ObjectHandle keySort(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle varsHandle,
+                                       ObjectHandle permVarsHandle, ObjectHandle sortedVarsHandle, int k) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[][] vars = globalHandles.get(varsHandle);
+        IntVar[] permVars = globalHandles.get(permVarsHandle);
+        IntVar[][] sortedVars = globalHandles.get(sortedVarsHandle);
+        Constraint keySort = model.keySort(vars, permVars, sortedVars, k);
+        ObjectHandle res = globalHandles.create(keySort);
+        return res;
+    }
 
     // lexChainLess
 
@@ -859,8 +869,6 @@ public class ConstraintApi {
         ObjectHandle res = globalHandles.create(path);
         return res;
     }
-
-    // regular TODO Implement Automaton Api
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "regular")
     public static ObjectHandle regular(IsolateThread thread, ObjectHandle modelHandle,
