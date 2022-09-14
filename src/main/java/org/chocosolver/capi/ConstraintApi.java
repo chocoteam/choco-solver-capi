@@ -724,8 +724,6 @@ public class ConstraintApi {
         return res;
     }
 
-    // keySort TODO - ADD MATRIX API
-
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "keysort")
     public static ObjectHandle keySort(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle varsHandle,
                                        ObjectHandle permVarsHandle, ObjectHandle sortedVarsHandle, int k) {
@@ -819,6 +817,19 @@ public class ConstraintApi {
     // mddc TODO Implement MDD Api
 
     // multiCostRegular TODO Implement Automaton Api
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "multiCostRegular")
+    public static ObjectHandle multiCostRegular(IsolateThread thread, ObjectHandle modelHandle,
+                                                ObjectHandle intVarsHandle, ObjectHandle costVarsHandle,
+                                                ObjectHandle costAutomatonHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        IntVar[] costVars = globalHandles.get(costVarsHandle);
+        ICostAutomaton auto = globalHandles.get(costAutomatonHandle);
+        Constraint multiCostRegular = model.multiCostRegular(intVars, costVars, auto);
+        ObjectHandle res = globalHandles.create(multiCostRegular);
+        return res;
+    }
 
     // nValues
 

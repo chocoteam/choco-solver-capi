@@ -51,54 +51,54 @@ public class ArrayApi {
 
     // int[][]
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_create")
-    public static ObjectHandle createIntArrayArray(IsolateThread thread, int size) {
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_2d_array_create")
+    public static ObjectHandle createInt2DArray(IsolateThread thread, int size) {
         int[][] array = new int[size][];
         ObjectHandle res = globalHandles.create(array);
         return res;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_set")
-    public static void setIntArrayArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_2d_array_set")
+    public static void setInt2DArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
                                              ObjectHandle elementHandle, int index) {
         int[][] array = globalHandles.get(arrayHandle);
         int[] element = globalHandles.get(elementHandle);
         array[index] = element;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_get")
-    public static ObjectHandle getIntArrayArrayElement(IsolateThread thread, ObjectHandle arrayHandle, int index) {
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_2d_array_get")
+    public static ObjectHandle getInt2DArrayElement(IsolateThread thread, ObjectHandle arrayHandle, int index) {
         int[][] array = globalHandles.get(arrayHandle);
         int[] element = array[index];
         ObjectHandle res = globalHandles.create(element);
         return res;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_length")
-    public static int getIntArrayArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_2d_array_length")
+    public static int getInt2DArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
         int[][] array = globalHandles.get(arrayHandle);
         return array.length;
     }
 
     // int[][][]
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_array_create")
-    public static ObjectHandle createIntArrayArrayArray(IsolateThread thread, int size) {
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_3d_array_create")
+    public static ObjectHandle createInt3DArray(IsolateThread thread, int size) {
         int[][][] array = new int[size][][];
         ObjectHandle res = globalHandles.create(array);
         return res;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_array_set")
-    public static void setIntArrayArrayArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_3d_array_set")
+    public static void setInt3DArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
                                                     ObjectHandle elementHandle, int index) {
         int[][][] array = globalHandles.get(arrayHandle);
         int[][] element = globalHandles.get(elementHandle);
         array[index] = element;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_array_get")
-    public static ObjectHandle getIntArrayArrayArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_3d_array_get")
+    public static ObjectHandle getInt3DArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
                                                             int index) {
         int[][][] array = globalHandles.get(arrayHandle);
         int[][] element = array[index];
@@ -106,10 +106,35 @@ public class ArrayApi {
         return res;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_array_array_length")
-    public static int getIntArrayArrayArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_3d_array_length")
+    public static int getInt3DArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
         int[][][] array = globalHandles.get(arrayHandle);
         return array.length;
+    }
+    // int[][][][]
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_4d_array_create")
+    public static ObjectHandle createInt4DArray(IsolateThread thread, int size) {
+        int[][][][] array = new int[size][][][];
+        ObjectHandle res = globalHandles.create(array);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_4d_array_set")
+    public static void setInt4DArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                                    ObjectHandle elementHandle, int index) {
+        int[][][][] array = globalHandles.get(arrayHandle);
+        int[][][] element = globalHandles.get(elementHandle);
+        array[index] = element;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_4d_array_get")
+    public static ObjectHandle getInt4DArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                                    int index) {
+        int[][][][] array = globalHandles.get(arrayHandle);
+        int[][][] element = array[index];
+        ObjectHandle res = globalHandles.create(element);
+        return res;
     }
 
     // IntVar Arrays
@@ -145,31 +170,31 @@ public class ArrayApi {
 
     // IntVar array of array
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_array_create")
-    public static ObjectHandle createIntVarArrayArray(IsolateThread thread, int size) {
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_2d_array_create")
+    public static ObjectHandle createIntVar2DArray(IsolateThread thread, int size) {
         IntVar[][] array = new IntVar[size][];
         ObjectHandle res = globalHandles.create(array);
         return res;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_array_set")
-    public static void setIntVarArrayArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_2d_array_set")
+    public static void setIntVar2DArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
                                                   ObjectHandle intVarArrayHandle, int index) {
         IntVar[][] array = globalHandles.get(arrayHandle);
         IntVar[] element = globalHandles.get(intVarArrayHandle);
         array[index] = element;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_array_get")
-    public static ObjectHandle getIntVarArrayArrayElement(IsolateThread thread, ObjectHandle arrayHandle, int index) {
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_2d_array_get")
+    public static ObjectHandle getIntVar2DArrayElement(IsolateThread thread, ObjectHandle arrayHandle, int index) {
         IntVar[][] array = globalHandles.get(arrayHandle);
         IntVar[] var = array[index];
         ObjectHandle res = globalHandles.create(var);
         return res;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_array_length")
-    public static int getIntVarArrayArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_2d_array_length")
+    public static int getIntVar2DArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
         IntVar[][] array = globalHandles.get(arrayHandle);
         return array.length;
     }
@@ -238,7 +263,6 @@ public class ArrayApi {
         Constraint cons = globalHandles.get(constraintHandle);
         array[index] = cons;
     }
-
 
     // Criterion Arrays
 

@@ -6,6 +6,7 @@ import org.chocosolver.solver.constraints.nary.automata.FA.IAutomaton;
 import org.chocosolver.solver.constraints.nary.automata.FA.utils.Counter;
 import org.chocosolver.solver.constraints.nary.automata.FA.utils.CounterState;
 import org.chocosolver.solver.constraints.nary.automata.FA.utils.ICounter;
+import org.chocosolver.solver.variables.IntVar;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.ObjectHandles;
@@ -15,6 +16,7 @@ import org.graalvm.nativeimage.c.type.CTypeConversion;
 
 import java.util.List;
 
+import static org.chocosolver.solver.constraints.nary.automata.FA.CostAutomaton.makeMultiResources;
 import static org.chocosolver.solver.constraints.nary.automata.FA.CostAutomaton.makeSingleResource;
 
 /**
@@ -248,4 +250,25 @@ public class AutomatonApi {
         return res;
     }
 
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "make_multi_resources_iiii")
+    public static ObjectHandle makeMultiResourcesIiii(IsolateThread thread, ObjectHandle automatonHandle,
+                                                     ObjectHandle costsHandle, ObjectHandle boundsHandle) {
+        int[][][][] costs = globalHandles.get(costsHandle);
+        IAutomaton auto = globalHandles.get(automatonHandle);
+        IntVar[] bounds = globalHandles.get(boundsHandle);
+        CostAutomaton costAuto = (CostAutomaton) makeMultiResources(auto, costs, bounds);
+        ObjectHandle res = globalHandles.create(costAuto);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "make_multi_resources_iii")
+    public static ObjectHandle makeMultiResourcesIii(IsolateThread thread, ObjectHandle automatonHandle,
+                                                     ObjectHandle costsHandle, ObjectHandle boundsHandle) {
+        int[][][] costs = globalHandles.get(costsHandle);
+        IAutomaton auto = globalHandles.get(automatonHandle);
+        IntVar[] bounds = globalHandles.get(boundsHandle);
+        CostAutomaton costAuto = (CostAutomaton) makeMultiResources(auto, costs, bounds);
+        ObjectHandle res = globalHandles.create(costAuto);
+        return res;
+    }
 }
