@@ -20,7 +20,7 @@ import static org.chocosolver.solver.constraints.nary.automata.FA.CostAutomaton.
 import static org.chocosolver.solver.constraints.nary.automata.FA.CostAutomaton.makeSingleResource;
 
 /**
- * C entrypoint API to manipulate Java arrays.
+ * C entrypoint API to manipulate Choco automaton objects.
  * @author Dimitri Justeau-Allaire.
  */
 public class AutomatonApi {

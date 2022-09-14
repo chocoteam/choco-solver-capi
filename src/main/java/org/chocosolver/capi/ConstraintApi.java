@@ -9,6 +9,7 @@ import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.constraints.nary.automata.FA.IAutomaton;
 import org.chocosolver.solver.constraints.nary.automata.FA.ICostAutomaton;
 import org.chocosolver.solver.variables.Task;
+import org.chocosolver.util.objects.graphs.MultivaluedDecisionDiagram;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.ObjectHandles;
@@ -117,6 +118,39 @@ public class ConstraintApi {
         Model model = globalHandles.get(modelHandle);
         IntVar[] vars = globalHandles.get(intVarArrayHandle);
         Constraint allDiff = model.allDifferent(vars);
+        ObjectHandle res = globalHandles.create(allDiff);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "allDifferentExcept0")
+    public static ObjectHandle allDifferentExcept0(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle intVarArrayHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] vars = globalHandles.get(intVarArrayHandle);
+        Constraint allDiff = model.allDifferentExcept0(vars);
+        ObjectHandle res = globalHandles.create(allDiff);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "allDifferentPrecPredSucc")
+    public static ObjectHandle allDifferentPrec(IsolateThread thread, ObjectHandle modelHandle,
+                                                ObjectHandle intVarArrayHandle, ObjectHandle predHandle,
+                                                ObjectHandle succHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] vars = globalHandles.get(intVarArrayHandle);
+        int[][] pred = globalHandles.get(predHandle);
+        int[][] succ = globalHandles.get(succHandle);
+        Constraint allDiff = model.allDiffPrec(vars, pred, succ);
+        ObjectHandle res = globalHandles.create(allDiff);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "allDifferentPrecBools")
+    public static ObjectHandle allDifferentPrec2(IsolateThread thread, ObjectHandle modelHandle,
+                                                ObjectHandle intVarArrayHandle, ObjectHandle precHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] vars = globalHandles.get(intVarArrayHandle);
+        boolean[][] prec = globalHandles.get(precHandle);
+        Constraint allDiff = model.allDiffPrec(vars, prec);
         ObjectHandle res = globalHandles.create(allDiff);
         return res;
     }
@@ -814,9 +848,16 @@ public class ConstraintApi {
         return res;
     }
 
-    // mddc TODO Implement MDD Api
-
-    // multiCostRegular TODO Implement Automaton Api
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "mddc")
+    public static ObjectHandle mddc(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle intVarsHandle,
+                                    ObjectHandle mddHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        MultivaluedDecisionDiagram mdd = globalHandles.get(mddHandle);
+        Constraint mddc = model.mddc(intVars, mdd);
+        ObjectHandle res = globalHandles.create(mddc);
+        return res;
+    }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "multiCostRegular")
     public static ObjectHandle multiCostRegular(IsolateThread thread, ObjectHandle modelHandle,
