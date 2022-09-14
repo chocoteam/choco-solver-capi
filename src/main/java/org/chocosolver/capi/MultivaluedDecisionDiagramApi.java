@@ -25,7 +25,7 @@ public class MultivaluedDecisionDiagramApi {
                                                ObjectHandle tuplesHandle, boolean compactOnce, boolean sortTuple) {
         IntVar[] intVars = globalHandles.get(intVarsHandle);
         int[][] tuples = globalHandles.get(tuplesHandle);
-	Tuples tuplesObject = new Tuples(tuples, feasible);
+	Tuples tuplesObject = new Tuples(tuples, true);
         MultivaluedDecisionDiagram mdd = new MultivaluedDecisionDiagram(intVars, tuplesObject, compactOnce, sortTuple);
         ObjectHandle res = globalHandles.create(mdd);
         return res;
