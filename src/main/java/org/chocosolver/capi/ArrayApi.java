@@ -111,6 +111,7 @@ public class ArrayApi {
         int[][][] array = globalHandles.get(arrayHandle);
         return array.length;
     }
+
     // int[][][][]
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_4d_array_create")
@@ -135,6 +136,12 @@ public class ArrayApi {
         int[][][] element = array[index];
         ObjectHandle res = globalHandles.create(element);
         return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_4d_array_length")
+    public static int getInt4DArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
+        int[][][][] array = globalHandles.get(arrayHandle);
+        return array.length;
     }
 
     // IntVar Arrays
