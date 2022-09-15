@@ -3,8 +3,16 @@
 mvn clean package
 
 cd target
- 
-native-image --shared -H:Name=libchoco_capi -cp choco-solver-capi-1.0-SNAPSHOT.jar --no-fallback --link-at-build-time
+
+OS=`uname`
+
+if [ "$OS" = "Linux" ]; then
+    native-image --shared -H:Name=libchoco_capi -cp choco-solver-capi-1.0-SNAPSHOT.jar --no-fallback --link-at-build-time
+elif [ "$OS" = "Darwin" ]; then
+    native-image --shared -H:Name=libchoco_capi -cp choco-solver-capi-1.0-SNAPSHOT.jar --no-fallback --link-at-build-time
+else
+    native-image.cmd --shared -H:Name=libchoco_capi -cp choco-solver-capi-1.0-SNAPSHOT.jar --no-fallback --link-at-build-time
+fi
 
 cd ..
 
