@@ -1,7 +1,6 @@
 package org.chocosolver.capi;
 
 import org.chocosolver.solver.Model;
-import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.Task;
 import org.graalvm.nativeimage.IsolateThread;
@@ -62,9 +61,13 @@ public class TaskApi {
     // Methods
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "ensure_bound_consistency")
-    public static void ensureBoundConsistency(IsolateThread thread, ObjectHandle taskHandle) throws ContradictionException {
+    public static void ensureBoundConsistency(IsolateThread thread, ObjectHandle taskHandle) {
         Task t = globalHandles.get(taskHandle);
-        t.ensureBoundConsistency();
+        try {
+            t.ensureBoundConsistency();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_start")

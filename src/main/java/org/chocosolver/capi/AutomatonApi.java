@@ -23,6 +23,7 @@ import static org.chocosolver.solver.constraints.nary.automata.FA.CostAutomaton.
  * C entrypoint API to manipulate Choco automaton objects.
  * @author Dimitri Justeau-Allaire.
  */
+
 public class AutomatonApi {
 
     private static final String API_PREFIX = "AutomatonApi_";
@@ -121,9 +122,14 @@ public class AutomatonApi {
     }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "delta")
-    public static int delta(IsolateThread thread, ObjectHandle faHandle, int source, int symbol) throws IAutomaton.NonDeterministicOperationException {
+    public static int delta(IsolateThread thread, ObjectHandle faHandle, int source, int symbol) {
         FiniteAutomaton fa = globalHandles.get(faHandle);
-        return fa.delta(source, symbol);
+        try {
+            return fa.delta(source, symbol);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "add_to_alphabet")
