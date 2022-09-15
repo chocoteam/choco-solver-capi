@@ -11,7 +11,7 @@ if [ "$OS" = "Linux" ]; then
 elif [ "$OS" = "Darwin" ]; then
     native-image --shared -H:Name=libchoco_capi -cp choco-solver-capi-1.0-SNAPSHOT.jar --no-fallback --link-at-build-time
 else
-    native-image.cmd --shared -H:Name=libchoco_capi -cp choco-solver-capi-1.0-SNAPSHOT.jar --no-fallback --link-at-build-time
+    native-image.cmd --shared -H:Name=choco_capi -cp choco-solver-capi-1.0-SNAPSHOT.jar --no-fallback --link-at-build-time
 fi
 
 cd ..
