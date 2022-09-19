@@ -27,7 +27,7 @@ public class VariableApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "getName")
     public static CCharPointer getName(IsolateThread thread, ObjectHandle varHandle) {
-        IntVar var = globalHandles.get(varHandle);
+        Variable var = globalHandles.get(varHandle);
         String name = var.getName();
         return CTypeConversion.toCString(name).get();
     }
