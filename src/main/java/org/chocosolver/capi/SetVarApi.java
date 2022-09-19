@@ -85,7 +85,7 @@ public class SetVarApi {
     public static ObjectHandle getValue(IsolateThread thread, ObjectHandle setVarHandle) {
         SetVar var = globalHandles.get(setVarHandle);
         int[] value = var.getValue().toArray();
-        ObjectHandle res = globalHandles.create(var);
+        ObjectHandle res = globalHandles.create(value);
         return res;
     }
 }
