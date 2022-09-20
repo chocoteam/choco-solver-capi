@@ -8,6 +8,7 @@ import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.constraints.nary.automata.FA.IAutomaton;
 import org.chocosolver.solver.constraints.nary.automata.FA.ICostAutomaton;
+import org.chocosolver.solver.variables.SetVar;
 import org.chocosolver.solver.variables.Task;
 import org.chocosolver.util.objects.graphs.MultivaluedDecisionDiagram;
 import org.graalvm.nativeimage.IsolateThread;
@@ -1076,6 +1077,375 @@ public class ConstraintApi {
         IntVar nbTree = globalHandles.get(nbTreeHandle);
         Constraint tree = model.tree(succs, nbTree, offset);
         ObjectHandle res = globalHandles.create(tree);
+        return res;
+    }
+
+    // --------------- //
+    // Set constraints //
+    // --------------- //
+
+    // union
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_union_ints")
+    public static ObjectHandle setUnionInts(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle intVarsHandle,
+                                            ObjectHandle setVarHandle) {
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        Model model = globalHandles.get(modelHandle);
+        SetVar setVar = globalHandles.get(setVarHandle);
+        Constraint c = model.union(intVars, setVar);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_union")
+    public static ObjectHandle setUnion(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarsHandle,
+                                        ObjectHandle setVarHandle) {
+        SetVar[] setVars = globalHandles.get(setVarsHandle);
+        Model model = globalHandles.get(modelHandle);
+        SetVar unionVar = globalHandles.get(setVarHandle);
+        Constraint c = model.union(setVars, unionVar);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_union_indices")
+    public static ObjectHandle setUnion(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarsHandle,
+                                        ObjectHandle indicesHandle, ObjectHandle unionHandle, int vOffset, int iOffset) {
+        SetVar[] setVars = globalHandles.get(setVarsHandle);
+        Model model = globalHandles.get(modelHandle);
+        SetVar unionVar = globalHandles.get(unionHandle);
+        SetVar indicesVar = globalHandles.get(indicesHandle);
+        Constraint c = model.union(unionVar, vOffset, indicesVar, iOffset, setVars);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // intersection
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_intersection")
+    public static ObjectHandle setIntersection(IsolateThread thread, ObjectHandle modelHandle,
+                                               ObjectHandle setVarsHandle, ObjectHandle intersectionHandle,
+                                               boolean bc) {
+        SetVar[] setVars = globalHandles.get(setVarsHandle);
+        Model model = globalHandles.get(modelHandle);
+        SetVar interVar = globalHandles.get(intersectionHandle);
+        Constraint c = model.intersection(setVars, interVar, bc);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // subsetEq
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_subset_eq")
+    public static ObjectHandle subsetEq(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarsHandle) {
+        SetVar[] setVars = globalHandles.get(setVarsHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.subsetEq(setVars);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // nbEmpty
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_nb_empty")
+    public static ObjectHandle nbEmpty(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarsHandle,
+                                       ObjectHandle intVarHandle) {
+        SetVar[] setVars = globalHandles.get(setVarsHandle);
+        IntVar nbEmpty = globalHandles.get(intVarHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.nbEmpty(setVars, nbEmpty);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // offset
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_offset")
+    public static ObjectHandle offset(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarHandle1,
+                                      ObjectHandle setVarHandle2, int offset) {
+        SetVar setVar1 = globalHandles.get(setVarHandle1);
+        SetVar setVar2 = globalHandles.get(setVarHandle2);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.offSet(setVar1, setVar2, offset);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // notEmpty
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_not_empty")
+    public static ObjectHandle offset(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarHandle) {
+        SetVar setVar = globalHandles.get(setVarHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.notEmpty(setVar);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // sum
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_sum")
+    public static ObjectHandle sum(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarHandle,
+                                   ObjectHandle sumHandle) {
+        SetVar setVar = globalHandles.get(setVarHandle);
+        IntVar sum = globalHandles.get(sumHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.sum(setVar, sum);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // sumElements
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_sum_elements")
+    public static ObjectHandle sumElements(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarHandle,
+                                   ObjectHandle weightsHandle, int offset, ObjectHandle sumHandle) {
+        SetVar setVar = globalHandles.get(setVarHandle);
+        IntVar sum = globalHandles.get(sumHandle);
+        int[] weights = globalHandles.get(weightsHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.sumElements(setVar, weights, offset, sum);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // max
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_max")
+    public static ObjectHandle setMax(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarHandle,
+                                      ObjectHandle maxHandle, boolean notEmpty) {
+        SetVar setVar = globalHandles.get(setVarHandle);
+        IntVar maxVar = globalHandles.get(maxHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.max(setVar, maxVar, notEmpty);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_max_indices")
+    public static ObjectHandle setMaxIndices(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarHandle,
+                                             ObjectHandle weightsHandle, int offset, ObjectHandle maxHandle,
+                                             boolean notEmpty) {
+        SetVar setVar = globalHandles.get(setVarHandle);
+        int[] weights = globalHandles.get(weightsHandle);
+        IntVar maxVar = globalHandles.get(maxHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.max(setVar, weights, offset, maxVar, notEmpty);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // min
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_min")
+    public static ObjectHandle setMin(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarHandle,
+                                      ObjectHandle minHandle, boolean notEmpty) {
+        SetVar setVar = globalHandles.get(setVarHandle);
+        IntVar minVar = globalHandles.get(minHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.min(setVar, minVar, notEmpty);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_min_indices")
+    public static ObjectHandle setMinIndices(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarHandle,
+                                             ObjectHandle weightsHandle, int offset, ObjectHandle minHandle,
+                                             boolean notEmpty) {
+        SetVar setVar = globalHandles.get(setVarHandle);
+        int[] weights = globalHandles.get(weightsHandle);
+        IntVar minVar = globalHandles.get(minHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.min(setVar, weights, offset, minVar, notEmpty);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // setBoolsChanneling
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_bools_channeling")
+    public static ObjectHandle setBoolsChanneling(IsolateThread thread, ObjectHandle modelHandle,
+                                                  ObjectHandle boolVarsHandle, ObjectHandle setVarHandle, int offset) {
+        SetVar setVar = globalHandles.get(setVarHandle);
+        BoolVar[] bools = globalHandles.get(boolVarsHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.setBoolsChanneling(bools, setVar, offset);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // setsIntsChanneling
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_ints_channeling")
+    public static ObjectHandle setIntsChanneling(IsolateThread thread, ObjectHandle modelHandle,
+                                                 ObjectHandle setVarsHandle, ObjectHandle intVarsHandle, int offset1,
+                                                 int offset2) {
+        SetVar[] setVars = globalHandles.get(setVarsHandle);
+        IntVar[] ints = globalHandles.get(intVarsHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.setsIntsChanneling(setVars, ints, offset1, offset2);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // disjoint
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_disjoint")
+    public static ObjectHandle setDisjoint(IsolateThread thread, ObjectHandle modelHandle,
+                                           ObjectHandle setVarHandle1, ObjectHandle setVarHandle2) {
+        SetVar setVar1 = globalHandles.get(setVarHandle1);
+        SetVar setVar2 = globalHandles.get(setVarHandle2);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.disjoint(setVar1, setVar2);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // allDisjoint
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_all_disjoint")
+    public static ObjectHandle setAllDisjoint(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarsHandle) {
+        SetVar[] setVars = globalHandles.get(setVarsHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.allDisjoint(setVars);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // allDifferent
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_all_different")
+    public static ObjectHandle setAllDifferent(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarsHandle) {
+        SetVar[] setVars = globalHandles.get(setVarsHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.allDifferent(setVars);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // allEqual
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_all_equal")
+    public static ObjectHandle setAllEqual(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarsHandle) {
+        SetVar[] setVars = globalHandles.get(setVarsHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.allEqual(setVars);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // partition
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_partition")
+    public static ObjectHandle setPartition(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarsHandle,
+                                            ObjectHandle universeHandle) {
+        SetVar[] setVars = globalHandles.get(setVarsHandle);
+        SetVar universe = globalHandles.get(universeHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.partition(setVars, universe);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // inverseSet
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_inverse_set")
+    public static ObjectHandle setInverseSet(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarsHandle,
+                                             ObjectHandle invSetVarsHandle, int offset1, int offset2) {
+        SetVar[] setVars = globalHandles.get(setVarsHandle);
+        SetVar[] invSetVars = globalHandles.get(invSetVarsHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.inverseSet(setVars, invSetVars, offset1, offset2);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // symmetric
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_symmetric")
+    public static ObjectHandle setSymmetric(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarsHandle,
+                                            int offset) {
+        SetVar[] setVars = globalHandles.get(setVarsHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.symmetric(setVars, offset);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // element
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_element")
+    public static ObjectHandle setElement(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle indexHandle,
+                                            ObjectHandle setVarsHandle, int offset, ObjectHandle setVarHandle) {
+        SetVar[] setVars = globalHandles.get(setVarsHandle);
+        SetVar setVar = globalHandles.get(setVarHandle);
+        IntVar index = globalHandles.get(indexHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.element(index, setVars, offset, setVar);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // member
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_member_set")
+    public static ObjectHandle setMemberSet(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarsHandle,
+                                            ObjectHandle setVarHandle) {
+        SetVar[] setVars = globalHandles.get(setVarsHandle);
+        SetVar setVar = globalHandles.get(setVarHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.member(setVars, setVar);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_member_int")
+    public static ObjectHandle setMemberInt(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle intVarHandle,
+                                            ObjectHandle setVarHandle) {
+        IntVar intVar = globalHandles.get(intVarHandle);
+        SetVar setVar = globalHandles.get(setVarHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.member(intVar, setVar);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // notMember
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_not_member_int")
+    public static ObjectHandle setNotMemberInt(IsolateThread thread, ObjectHandle modelHandle,
+                                               ObjectHandle intVarHandle, ObjectHandle setVarHandle) {
+        IntVar intVar = globalHandles.get(intVarHandle);
+        SetVar setVar = globalHandles.get(setVarHandle);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.notMember(intVar, setVar);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // setLe
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_le")
+    public static ObjectHandle setLe(IsolateThread thread, ObjectHandle modelHandle,
+                                     ObjectHandle setVarHandle1, ObjectHandle setVarHandle2) {
+        SetVar setVar1 = globalHandles.get(setVarHandle1);
+        SetVar setVar2 = globalHandles.get(setVarHandle2);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.setLe(setVar1, setVar2);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // setLt
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_lt")
+    public static ObjectHandle setLt(IsolateThread thread, ObjectHandle modelHandle,
+                                     ObjectHandle setVarHandle1, ObjectHandle setVarHandle2) {
+        SetVar setVar1 = globalHandles.get(setVarHandle1);
+        SetVar setVar2 = globalHandles.get(setVarHandle2);
+        Model model = globalHandles.get(modelHandle);
+        Constraint c = model.setLt(setVar1, setVar2);
+        ObjectHandle res = globalHandles.create(c);
         return res;
     }
 
