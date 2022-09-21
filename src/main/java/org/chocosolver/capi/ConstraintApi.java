@@ -1199,7 +1199,7 @@ public class ConstraintApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_sum_elements")
     public static ObjectHandle sumElements(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarHandle,
-                                   ObjectHandle weightsHandle, int offset, ObjectHandle sumHandle) {
+                                   	   ObjectHandle weightsHandle, int offset, ObjectHandle sumHandle) {
         SetVar setVar = globalHandles.get(setVarHandle);
         IntVar sum = globalHandles.get(sumHandle);
         int[] weights = globalHandles.get(weightsHandle);
@@ -1376,7 +1376,7 @@ public class ConstraintApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_element")
     public static ObjectHandle setElement(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle indexHandle,
-                                            ObjectHandle setVarsHandle, int offset, ObjectHandle setVarHandle) {
+                                          ObjectHandle setVarsHandle, int offset, ObjectHandle setVarHandle) {
         SetVar[] setVars = globalHandles.get(setVarsHandle);
         SetVar setVar = globalHandles.get(setVarHandle);
         IntVar index = globalHandles.get(indexHandle);

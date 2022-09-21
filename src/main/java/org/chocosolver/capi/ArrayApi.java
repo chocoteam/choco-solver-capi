@@ -3,6 +3,7 @@ package org.chocosolver.capi;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.variables.SetVar;
 import org.chocosolver.solver.variables.Task;
 import org.chocosolver.util.criteria.Criterion;
 import org.graalvm.nativeimage.IsolateThread;
@@ -252,6 +253,37 @@ public class ArrayApi {
         BoolVar[] array = globalHandles.get(arrayHandle);
         BoolVar var = globalHandles.get(boolVarHandle);
         array[index] = var;
+    }
+
+    // SetVar Arrays
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "setVar_create")
+    public static ObjectHandle createSetVarArray(IsolateThread thread, int size) {
+        SetVar[] array = new SetVar[size];
+        ObjectHandle res = globalHandles.create(array);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "setVar_set")
+    public static void setSetVarArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                             ObjectHandle setVarHandle, int index) {
+        SetVar[] array = globalHandles.get(arrayHandle);
+        SetVar var = globalHandles.get(setVarHandle);
+        array[index] = var;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "setVar_get")
+    public static ObjectHandle getSetVarArrayElement(IsolateThread thread, ObjectHandle arrayHandle, int index) {
+        SetVar[] array = globalHandles.get(arrayHandle);
+        SetVar var = array[index];
+        ObjectHandle res = globalHandles.create(var);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "setVar_length")
+    public static int getSetVarArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
+        SetVar[] array = globalHandles.get(arrayHandle);
+        return array.length;
     }
 
     // Constraint Arrays
