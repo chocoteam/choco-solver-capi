@@ -31,6 +31,12 @@ public class VariableApi {
         String name = var.getName();
         return CTypeConversion.toCString(name).get();
     }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "isView")
+    public static boolean isView(IsolateThread thread, ObjectHandle varHandle) {
+        Variable var = globalHandles.get(varHandle);
+        return (var.getTypeAndKind() & Variable.VIEW) != 0;
+    }
 }
 
 
