@@ -4,12 +4,10 @@ import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.constraints.extension.Tuples;
 import org.chocosolver.solver.constraints.nary.circuit.CircuitConf;
-import org.chocosolver.solver.variables.BoolVar;
-import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.variables.*;
 import org.chocosolver.solver.constraints.nary.automata.FA.IAutomaton;
 import org.chocosolver.solver.constraints.nary.automata.FA.ICostAutomaton;
-import org.chocosolver.solver.variables.SetVar;
-import org.chocosolver.solver.variables.Task;
+import org.chocosolver.util.objects.graphs.DirectedGraph;
 import org.chocosolver.util.objects.graphs.MultivaluedDecisionDiagram;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
@@ -17,6 +15,8 @@ import org.graalvm.nativeimage.ObjectHandles;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
+
+import java.util.Set;
 
 /**
  * C entrypoint API to create and manipulate constraints.
@@ -1445,6 +1445,710 @@ public class ConstraintApi {
         SetVar setVar2 = globalHandles.get(setVarHandle2);
         Model model = globalHandles.get(modelHandle);
         Constraint c = model.setLt(setVar1, setVar2);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // ----------------- //
+    // Graph constraints //
+    // ----------------- //
+
+    // nb_nodes
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_nb_nodes")
+    public static ObjectHandle nbNodes(IsolateThread thread, ObjectHandle modelHandle,
+                                     ObjectHandle graphVarHandle, ObjectHandle intVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        GraphVar g = globalHandles.get(graphVarHandle);
+        IntVar i = globalHandles.get(intVarHandle);
+        Constraint c = model.nbNodes(g, i);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // nb_edges
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_nb_edges")
+    public static ObjectHandle nbEdges(IsolateThread thread, ObjectHandle modelHandle,
+                                       ObjectHandle graphVarHandle, ObjectHandle intVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        GraphVar g = globalHandles.get(graphVarHandle);
+        IntVar i = globalHandles.get(intVarHandle);
+        Constraint c = model.nbEdges(g, i);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // loop_set
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_loop_set")
+    public static ObjectHandle loopSet(IsolateThread thread, ObjectHandle modelHandle,
+                                       ObjectHandle graphVarHandle, ObjectHandle setVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        GraphVar g = globalHandles.get(graphVarHandle);
+        SetVar s = globalHandles.get(setVarHandle);
+        Constraint c = model.loopSet(g, s);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // nb_loops
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_nb_loops")
+    public static ObjectHandle nbLoops(IsolateThread thread, ObjectHandle modelHandle,
+                                       ObjectHandle graphVarHandle, ObjectHandle intVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        GraphVar g = globalHandles.get(graphVarHandle);
+        IntVar i = globalHandles.get(intVarHandle);
+        Constraint c = model.nbLoops(g, i);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // symmetric
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_symmetric")
+    public static ObjectHandle symmetric(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle graphVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.symmetric(g);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // anti_symmetric
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_anti_symmetric")
+    public static ObjectHandle antisymmetric(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle graphVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.antisymmetric(g);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // transitivity
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_transitivity")
+    public static ObjectHandle transitivity(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle graphVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        GraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.transitivity(g);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // subgraph
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_subgraph")
+    public static ObjectHandle subgraph(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle graphVarHandle1,
+                                        ObjectHandle graphVarHandle2) {
+        Model model = globalHandles.get(modelHandle);
+        GraphVar g1 = globalHandles.get(graphVarHandle1);
+        GraphVar g2 = globalHandles.get(graphVarHandle2);
+        if (g1 instanceof UndirectedGraphVar && g2 instanceof UndirectedGraphVar) {
+            Constraint c = model.subgraph((UndirectedGraphVar) g1, (UndirectedGraphVar) g2);
+            ObjectHandle res = globalHandles.create(c);
+            return res;
+        } else {
+            try {
+                Constraint c = model.subgraph((DirectedGraphVar) g1, (DirectedGraphVar) g2);
+                ObjectHandle res = globalHandles.create(c);
+                return res;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+    }
+
+    // nodes_channeling
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_nodes_channeling_set")
+    public static ObjectHandle nodesChannelingSet(IsolateThread thread, ObjectHandle modelHandle,
+                                                  ObjectHandle graphVarHandle, ObjectHandle setVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        GraphVar g = globalHandles.get(graphVarHandle);
+        SetVar s = globalHandles.get(setVarHandle);
+        Constraint c = model.nodesChanneling(g, s);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_nodes_channeling_bools")
+    public static ObjectHandle nodesChannelingBools(IsolateThread thread, ObjectHandle modelHandle,
+                                                    ObjectHandle graphVarHandle, ObjectHandle boolVarsHandle) {
+        Model model = globalHandles.get(modelHandle);
+        GraphVar g = globalHandles.get(graphVarHandle);
+        BoolVar[] b = globalHandles.get(boolVarsHandle);
+        Constraint c = model.nodesChanneling(g, b);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // node_channeling
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_node_channeling")
+    public static ObjectHandle nodesChannelingSet(IsolateThread thread, ObjectHandle modelHandle,
+                                                  ObjectHandle graphVarHandle, ObjectHandle boolVarHandle, int node) {
+        Model model = globalHandles.get(modelHandle);
+        GraphVar g = globalHandles.get(graphVarHandle);
+        BoolVar b = globalHandles.get(boolVarHandle);
+        Constraint c = model.nodeChanneling(g, b, node);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // edge_channeling
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_edge_channeling")
+    public static ObjectHandle edgeChanneling(IsolateThread thread, ObjectHandle modelHandle,
+                                              ObjectHandle graphVarHandle, ObjectHandle boolVarHandle, int from, int to) {
+        Model model = globalHandles.get(modelHandle);
+        GraphVar g = globalHandles.get(graphVarHandle);
+        BoolVar b = globalHandles.get(boolVarHandle);
+        Constraint c;
+        if (g instanceof UndirectedGraphVar) {
+            c = model.edgeChanneling((UndirectedGraphVar) g, b, from, to);
+        }
+        else {
+            c = model.edgeChanneling((DirectedGraphVar) g, b, from, to);
+        }
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // neighbors_channeling
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_neighbors_channeling_sets")
+    public static ObjectHandle neighChannelingSets(IsolateThread thread, ObjectHandle modelHandle,
+                                                   ObjectHandle graphVarHandle, ObjectHandle setVarsHandle) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        SetVar[] s = globalHandles.get(setVarsHandle);
+        Constraint c = model.neighborsChanneling(g, s);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_neighbors_channeling_bools")
+    public static ObjectHandle neighChannelingBools(IsolateThread thread, ObjectHandle modelHandle,
+                                                    ObjectHandle graphVarHandle, ObjectHandle boolVarsHandle) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        BoolVar[][] b = globalHandles.get(boolVarsHandle);
+        Constraint c = model.neighborsChanneling(g, b);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_neighbors_channeling_node_set")
+    public static ObjectHandle neighChannelingNodeSet(IsolateThread thread, ObjectHandle modelHandle,
+                                                      ObjectHandle graphVarHandle, ObjectHandle setVarHandle, int node) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        SetVar s = globalHandles.get(setVarHandle);
+        Constraint c = model.neighborsChanneling(g, s, node);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_neighbors_channeling_node_bools")
+    public static ObjectHandle neighChannelingNodeBools(IsolateThread thread, ObjectHandle modelHandle,
+                                                        ObjectHandle graphVarHandle, ObjectHandle boolVarsHandle, int node) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        BoolVar[] b = globalHandles.get(boolVarsHandle);
+        Constraint c = model.neighborsChanneling(g, b, node);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // successors_channeling
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_successors_channeling_sets")
+    public static ObjectHandle succChannelingSets(IsolateThread thread, ObjectHandle modelHandle,
+                                                  ObjectHandle graphVarHandle, ObjectHandle setVarsHandle) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        SetVar[] s = globalHandles.get(setVarsHandle);
+        Constraint c = model.successorsChanneling(g, s);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_successors_channeling_bools")
+    public static ObjectHandle succChannelingBools(IsolateThread thread, ObjectHandle modelHandle,
+                                                   ObjectHandle graphVarHandle, ObjectHandle boolVarsHandle) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        BoolVar[][] b = globalHandles.get(boolVarsHandle);
+        Constraint c = model.successorsChanneling(g, b);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_successors_channeling_node_set")
+    public static ObjectHandle succChannelingNodeSet(IsolateThread thread, ObjectHandle modelHandle,
+                                                      ObjectHandle graphVarHandle, ObjectHandle setVarHandle, int node) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        SetVar s = globalHandles.get(setVarHandle);
+        Constraint c = model.successorsChanneling(g, s, node);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_successors_channeling_node_bools")
+    public static ObjectHandle succChannelingNodeBools(IsolateThread thread, ObjectHandle modelHandle,
+                                                        ObjectHandle graphVarHandle, ObjectHandle boolVarsHandle, int node) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        BoolVar[] b = globalHandles.get(boolVarsHandle);
+        Constraint c = model.successorsChanneling(g, b, node);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // predecessors_channeling
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_predecessors_channeling_node_set")
+    public static ObjectHandle predChannelingNodeSet(IsolateThread thread, ObjectHandle modelHandle,
+                                                     ObjectHandle graphVarHandle, ObjectHandle setVarHandle, int node) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        SetVar s = globalHandles.get(setVarHandle);
+        Constraint c = model.predecessorsChanneling(g, s, node);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_predecessors_channeling_node_bools")
+    public static ObjectHandle predChannelingNodeBools(IsolateThread thread, ObjectHandle modelHandle,
+                                                       ObjectHandle graphVarHandle, ObjectHandle boolVarsHandle, int node) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        BoolVar[] b = globalHandles.get(boolVarsHandle);
+        Constraint c = model.predecessorsChanneling(g, b, node);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // min_degree
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_min_degree")
+    public static ObjectHandle minDegree(IsolateThread thread, ObjectHandle modelHandle,
+                                         ObjectHandle graphVarHandle, int minDegree) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.minDegree(g, minDegree);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // min_degrees
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_min_degrees")
+    public static ObjectHandle minDegrees(IsolateThread thread, ObjectHandle modelHandle,
+                                          ObjectHandle graphVarHandle, ObjectHandle minDegreesHandle) {
+        Model model = globalHandles.get(modelHandle);
+        int[] minDegrees = globalHandles.get(minDegreesHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.minDegrees(g, minDegrees);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // max_degree
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_max_degree")
+    public static ObjectHandle maxDegree(IsolateThread thread, ObjectHandle modelHandle,
+                                         ObjectHandle graphVarHandle, int maxDegree) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.maxDegree(g, maxDegree);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // max_degrees
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_max_degrees")
+    public static ObjectHandle maxDegrees(IsolateThread thread, ObjectHandle modelHandle,
+                                          ObjectHandle graphVarHandle, ObjectHandle maxDegreesHandle) {
+        Model model = globalHandles.get(modelHandle);
+        int[] maxDegrees = globalHandles.get(maxDegreesHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.maxDegrees(g, maxDegrees);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // degrees
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_degrees")
+    public static ObjectHandle degrees(IsolateThread thread, ObjectHandle modelHandle,
+                                          ObjectHandle graphVarHandle, ObjectHandle degreesHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] degrees = globalHandles.get(degreesHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.degrees(g, degrees);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // min_in_degree
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_min_in_degree")
+    public static ObjectHandle minInDegree(IsolateThread thread, ObjectHandle modelHandle,
+                                           ObjectHandle graphVarHandle, int minDegree) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.minInDegree(g, minDegree);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // min_in_degrees
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_min_in_degrees")
+    public static ObjectHandle minInDegrees(IsolateThread thread, ObjectHandle modelHandle,
+                                            ObjectHandle graphVarHandle, ObjectHandle minDegreesHandle) {
+        Model model = globalHandles.get(modelHandle);
+        int[] minDegrees = globalHandles.get(minDegreesHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.minInDegrees(g, minDegrees);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // max_in_degree
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_max_in_degree")
+    public static ObjectHandle maxInDegree(IsolateThread thread, ObjectHandle modelHandle,
+                                           ObjectHandle graphVarHandle, int maxDegree) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.maxInDegree(g, maxDegree);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // max_in_degrees
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_max_in_degrees")
+    public static ObjectHandle maxInDegrees(IsolateThread thread, ObjectHandle modelHandle,
+                                            ObjectHandle graphVarHandle, ObjectHandle maxDegreesHandle) {
+        Model model = globalHandles.get(modelHandle);
+        int[] maxDegrees = globalHandles.get(maxDegreesHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.maxInDegrees(g, maxDegrees);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // in_degrees
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_in_degrees")
+    public static ObjectHandle inDegrees(IsolateThread thread, ObjectHandle modelHandle,
+                                         ObjectHandle graphVarHandle, ObjectHandle degreesHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] degrees = globalHandles.get(degreesHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.inDegrees(g, degrees);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+    /////
+
+    // min_out_degree
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_min_out_degree")
+    public static ObjectHandle minOutDegree(IsolateThread thread, ObjectHandle modelHandle,
+                                            ObjectHandle graphVarHandle, int minDegree) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.minOutDegree(g, minDegree);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // min_out_degrees
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_min_out_degrees")
+    public static ObjectHandle minOutDegrees(IsolateThread thread, ObjectHandle modelHandle,
+                                             ObjectHandle graphVarHandle, ObjectHandle minDegreesHandle) {
+        Model model = globalHandles.get(modelHandle);
+        int[] minDegrees = globalHandles.get(minDegreesHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.minOutDegrees(g, minDegrees);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // max_out_degree
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_max_out_degree")
+    public static ObjectHandle maxOutDegree(IsolateThread thread, ObjectHandle modelHandle,
+                                            ObjectHandle graphVarHandle, int maxDegree) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.maxOutDegree(g, maxDegree);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // max_out_degrees
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_max_out_degrees")
+    public static ObjectHandle maxOutDegrees(IsolateThread thread, ObjectHandle modelHandle,
+                                            ObjectHandle graphVarHandle, ObjectHandle maxDegreesHandle) {
+        Model model = globalHandles.get(modelHandle);
+        int[] maxDegrees = globalHandles.get(maxDegreesHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.maxOutDegrees(g, maxDegrees);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // out_degrees
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_out_degrees")
+    public static ObjectHandle outDegrees(IsolateThread thread, ObjectHandle modelHandle,
+                                          ObjectHandle graphVarHandle, ObjectHandle degreesHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] degrees = globalHandles.get(degreesHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.outDegrees(g, degrees);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // cycle
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_cycle")
+    public static ObjectHandle cycle(IsolateThread thread, ObjectHandle modelHandle,
+                                     ObjectHandle graphVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.cycle(g);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // no_cycle
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_no_cycle")
+    public static ObjectHandle noCycle(IsolateThread thread, ObjectHandle modelHandle,
+                                       ObjectHandle graphVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.noCycle(g);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // no_circuit
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_no_circuit")
+    public static ObjectHandle noCircuit(IsolateThread thread, ObjectHandle modelHandle,
+                                         ObjectHandle graphVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.noCircuit(g);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // connected
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_connected")
+    public static ObjectHandle connected(IsolateThread thread, ObjectHandle modelHandle,
+                                         ObjectHandle graphVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.connected(g);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // biconnected
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_biconnected")
+    public static ObjectHandle biconnected(IsolateThread thread, ObjectHandle modelHandle,
+                                           ObjectHandle graphVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.biconnected(g);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // nb_connected_components
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_nb_connected_components")
+    public static ObjectHandle nbCC(IsolateThread thread, ObjectHandle modelHandle,
+                                    ObjectHandle graphVarHandle, ObjectHandle intVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        IntVar i = globalHandles.get(intVarHandle);
+        Constraint c = model.nbConnectedComponents(g, i);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // size_connected_components
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_size_connected_components")
+    public static ObjectHandle sizeCC(IsolateThread thread, ObjectHandle modelHandle,
+                                      ObjectHandle graphVarHandle, ObjectHandle minHandle, ObjectHandle maxHandle) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        IntVar minCC = globalHandles.get(minHandle);
+        IntVar maxCC = globalHandles.get(maxHandle);
+        Constraint c = model.sizeConnectedComponents(g, minCC, maxCC);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // size_min_connected_components
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_size_min_connected_components")
+    public static ObjectHandle sizeMinCC(IsolateThread thread, ObjectHandle modelHandle,
+                                         ObjectHandle graphVarHandle, ObjectHandle minHandle) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        IntVar minCC = globalHandles.get(minHandle);
+        Constraint c = model.sizeMinConnectedComponents(g, minCC);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // size_max_connected_components
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_size_max_connected_components")
+    public static ObjectHandle sizeMaxCC(IsolateThread thread, ObjectHandle modelHandle,
+                                      ObjectHandle graphVarHandle, ObjectHandle maxHandle) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        IntVar maxCC = globalHandles.get(maxHandle);
+        Constraint c = model.sizeMaxConnectedComponents(g, maxCC);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // strongly_connected
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_strongly_connected")
+    public static ObjectHandle stronglyConnected(IsolateThread thread, ObjectHandle modelHandle,
+                                                 ObjectHandle graphVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.stronglyConnected(g);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // nb_strongly_connected_components
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_nb_strongly_connected_components")
+    public static ObjectHandle nbSCC(IsolateThread thread, ObjectHandle modelHandle,
+                                     ObjectHandle graphVarHandle, ObjectHandle intVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        IntVar i = globalHandles.get(intVarHandle);
+        Constraint c = model.nbStronglyConnectedComponents(g, i);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // tree
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_tree")
+    public static ObjectHandle tree(IsolateThread thread, ObjectHandle modelHandle,
+                                    ObjectHandle graphVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.tree(g);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // forest
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_forest")
+    public static ObjectHandle forest(IsolateThread thread, ObjectHandle modelHandle,
+                                      ObjectHandle graphVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.forest(g);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // directed_tree
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_directed_tree")
+    public static ObjectHandle dirTree(IsolateThread thread, ObjectHandle modelHandle,
+                                       ObjectHandle graphVarHandle, int root) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.directedTree(g, root);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // directed_forest
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_directed_forest")
+    public static ObjectHandle dirforest(IsolateThread thread, ObjectHandle modelHandle,
+                                         ObjectHandle graphVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.directedForest(g);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // reachability
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_reachability")
+    public static ObjectHandle reachability(IsolateThread thread, ObjectHandle modelHandle,
+                                            ObjectHandle graphVarHandle, int root) {
+        Model model = globalHandles.get(modelHandle);
+        DirectedGraphVar g = globalHandles.get(graphVarHandle);
+        Constraint c = model.reachability(g, root);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // nb_cliques
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_nb_cliques")
+    public static ObjectHandle nbCliques(IsolateThread thread, ObjectHandle modelHandle,
+                                         ObjectHandle graphVarHandle, ObjectHandle intVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        UndirectedGraphVar g = globalHandles.get(graphVarHandle);
+        IntVar i = globalHandles.get(intVarHandle);
+        Constraint c = model.nbCliques(g, i);
+        ObjectHandle res = globalHandles.create(c);
+        return res;
+    }
+
+    // diameter
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_diameter")
+    public static ObjectHandle diameter(IsolateThread thread, ObjectHandle modelHandle,
+                                        ObjectHandle graphVarHandle, ObjectHandle intVarHandle) {
+        Model model = globalHandles.get(modelHandle);
+        GraphVar g = globalHandles.get(graphVarHandle);
+        IntVar i = globalHandles.get(intVarHandle);
+        Constraint c;
+        if (g instanceof UndirectedGraphVar) {
+            c = model.diameter((UndirectedGraphVar) g, i);
+        } else {
+            c = model.diameter((DirectedGraphVar) g, i);
+        }
         ObjectHandle res = globalHandles.create(c);
         return res;
     }
