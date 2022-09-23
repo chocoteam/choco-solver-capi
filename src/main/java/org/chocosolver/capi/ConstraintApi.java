@@ -1551,14 +1551,9 @@ public class ConstraintApi {
             ObjectHandle res = globalHandles.create(c);
             return res;
         } else {
-            try {
-                Constraint c = model.subgraph((DirectedGraphVar) g1, (DirectedGraphVar) g2);
-                ObjectHandle res = globalHandles.create(c);
-                return res;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
+            Constraint c = model.subgraph((DirectedGraphVar) g1, (DirectedGraphVar) g2);
+            ObjectHandle res = globalHandles.create(c);
+            return res;
         }
     }
 
