@@ -48,7 +48,7 @@ public class GraphVarApi {
         return res;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_node_induced_graphar")
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_node_induced_graphvar")
     public static ObjectHandle createNodeInducedGraphVar(IsolateThread thread, ObjectHandle modelHandle, CCharPointer name,
                                                          ObjectHandle lbHandle, ObjectHandle ubHandle) {
         Model model = globalHandles.get(modelHandle);
