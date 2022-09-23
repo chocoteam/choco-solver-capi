@@ -1457,7 +1457,7 @@ public class ConstraintApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_nb_nodes")
     public static ObjectHandle nbNodes(IsolateThread thread, ObjectHandle modelHandle,
-                                     ObjectHandle graphVarHandle, ObjectHandle intVarHandle) {
+                                       ObjectHandle graphVarHandle, ObjectHandle intVarHandle) {
         Model model = globalHandles.get(modelHandle);
         GraphVar g = globalHandles.get(graphVarHandle);
         IntVar i = globalHandles.get(intVarHandle);
@@ -1859,7 +1859,6 @@ public class ConstraintApi {
         ObjectHandle res = globalHandles.create(c);
         return res;
     }
-    /////
 
     // min_out_degree
 
