@@ -273,7 +273,7 @@ public class ArrayApi {
     }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "boolVar_2d_array_get")
-    public static ObjectHandle getIntVar2DArrayElement(IsolateThread thread, ObjectHandle arrayHandle, int index) {
+    public static ObjectHandle getBoolVar2DArrayElement(IsolateThread thread, ObjectHandle arrayHandle, int index) {
         BoolVar[][] array = globalHandles.get(arrayHandle);
         BoolVar[] var = array[index];
         ObjectHandle res = globalHandles.create(var);
