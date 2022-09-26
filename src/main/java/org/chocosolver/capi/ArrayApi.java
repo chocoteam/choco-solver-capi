@@ -268,7 +268,7 @@ public class ArrayApi {
     public static void setBoolVar2DArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
                                                   ObjectHandle boolVarArrayHandle, int index) {
         BoolVar[][] array = globalHandles.get(arrayHandle);
-        BoolVar[] element = globalHandles.get(intVarArrayHandle);
+        BoolVar[] element = globalHandles.get(boolVarArrayHandle);
         array[index] = element;
     }
 
