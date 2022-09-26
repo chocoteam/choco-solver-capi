@@ -255,6 +255,31 @@ public class ArrayApi {
         array[index] = var;
     }
 
+    // BoolVar 2D Arrays
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "boolVar_2d_array_create")
+    public static ObjectHandle createBoolVar2DArray(IsolateThread thread, int size) {
+        BoolVar[][] array = new BoolVar[size][];
+        ObjectHandle res = globalHandles.create(array);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "boolVar_2d_array_set")
+    public static void setBoolVar2DArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                                  ObjectHandle boolVarArrayHandle, int index) {
+        BoolVar[][] array = globalHandles.get(arrayHandle);
+        BoolVar[] element = globalHandles.get(intVarArrayHandle);
+        array[index] = element;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "boolVar_2d_array_get")
+    public static ObjectHandle getIntVar2DArrayElement(IsolateThread thread, ObjectHandle arrayHandle, int index) {
+        BoolVar[][] array = globalHandles.get(arrayHandle);
+        BoolVar[] var = array[index];
+        ObjectHandle res = globalHandles.create(var);
+        return res;
+    }
+
     // SetVar Arrays
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "setVar_create")
