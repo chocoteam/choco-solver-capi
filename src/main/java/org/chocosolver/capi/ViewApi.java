@@ -1,8 +1,8 @@
 package org.chocosolver.capi;
 
-import org.chocosolver.solver.variables.BoolVar;
-import org.chocosolver.solver.variables.IntVar;
-import org.chocosolver.solver.variables.SetVar;
+import org.chocosolver.solver.variables.*;
+import org.chocosolver.util.objects.setDataStructures.ISet;
+import org.chocosolver.util.objects.setDataStructures.SetFactory;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.ObjectHandles;
@@ -19,7 +19,7 @@ public class ViewApi {
 
     private static ObjectHandles globalHandles = ObjectHandles.getGlobal();
 
-    // Boolean views
+    // Over Boolean views
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "bool_not_view")
     public static ObjectHandle boolNotView(IsolateThread thread, ObjectHandle boolVarHandle) {
@@ -45,7 +45,7 @@ public class ViewApi {
         return res;
     }
 
-    // Integer views
+    // Over Integer Variables
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "int_offset_view")
     public static ObjectHandle intOffsetView(IsolateThread thread, ObjectHandle intVarHandle, int offset) {
@@ -119,7 +119,7 @@ public class ViewApi {
         return res;
     }
 
-    // Set Variables
+    // Over Set Variables
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "bools_set_view")
     public static ObjectHandle boolsSetView(IsolateThread thread, ObjectHandle boolVarsHandle, int offset) {
@@ -161,6 +161,92 @@ public class ViewApi {
         SetVar setVar1 = globalHandles.get(setVarHandle1);
         SetVar setVar2 = globalHandles.get(setVarHandle2);
         SetVar view = setVar1.getModel().setDifferenceView(setVar1, setVar2);
+        ObjectHandle res = globalHandles.create(view);
+        return res;
+    }
+
+    // Over Graph Variables
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_node_set_view")
+    public static ObjectHandle graphNodeSetView(IsolateThread thread, ObjectHandle graphVar) {
+        GraphVar g = globalHandles.get(graphVar);
+        SetVar view = g.getModel().graphNodeSetView(g);
+        ObjectHandle res = globalHandles.create(view);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_successors_set_view")
+    public static ObjectHandle graphSuccessorsSetView(IsolateThread thread, ObjectHandle graphVar, int node) {
+        DirectedGraphVar g = globalHandles.get(graphVar);
+        SetVar view = g.getModel().graphSuccessorsSetView(g, node);
+        ObjectHandle res = globalHandles.create(view);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_predecessors_set_view")
+    public static ObjectHandle graphPredecessorsSetView(IsolateThread thread, ObjectHandle graphVar, int node) {
+        DirectedGraphVar g = globalHandles.get(graphVar);
+        SetVar view = g.getModel().graphPredecessorsSetView(g, node);
+        ObjectHandle res = globalHandles.create(view);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_neighbors_set_view")
+    public static ObjectHandle graphNeighborsSetView(IsolateThread thread, ObjectHandle graphVar, int node) {
+        UndirectedGraphVar g = globalHandles.get(graphVar);
+        SetVar view = g.getModel().graphNeighborsSetView(g, node);
+        ObjectHandle res = globalHandles.create(view);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "node_induced_subgraph_view")
+    public static ObjectHandle nodeInducedSubgraphView(IsolateThread thread, ObjectHandle graphVar,
+                                                       ObjectHandle nodesHandle, boolean exclude) {
+        GraphVar g = globalHandles.get(graphVar);
+        int[] nodes = globalHandles.get(nodesHandle);
+        ISet nodeSet = SetFactory.makeConstantSet(nodes);
+        GraphVar view;
+        if (g instanceof UndirectedGraphVar) {
+            view = g.getModel().nodeInducedSubgraphView((UndirectedGraphVar) g, nodeSet, exclude);
+        } else {
+            view = g.getModel().nodeInducedSubgraphView((DirectedGraphVar) g, nodeSet, exclude);
+        }
+        ObjectHandle res = globalHandles.create(view);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "edge_induced_subgraph_view")
+    public static ObjectHandle edgeInducedSubgraphView(IsolateThread thread, ObjectHandle graphVar,
+                                                       ObjectHandle edgesHandle, boolean exclude) {
+        GraphVar g = globalHandles.get(graphVar);
+        int[][] edges = globalHandles.get(edgesHandle);
+        GraphVar view;
+        if (g instanceof UndirectedGraphVar) {
+            view = g.getModel().edgeInducedSubgraphView((UndirectedGraphVar) g, edges, exclude);
+        } else {
+            view = g.getModel().edgeInducedSubgraphView((DirectedGraphVar) g, edges, exclude);
+        }
+        ObjectHandle res = globalHandles.create(view);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_union_view")
+    public static ObjectHandle graphUnionView(IsolateThread thread, ObjectHandle graphVars) {
+        GraphVar[] graphs = globalHandles.get(graphVars);
+        GraphVar view;
+        if (graphs[0] instanceof UndirectedGraphVar) {
+            UndirectedGraphVar[] uGraphs = new UndirectedGraphVar[graphs.length];
+            for (int i = 0; i < graphs.length; i++) {
+                uGraphs[i] = (UndirectedGraphVar) graphs[i];
+            }
+            view = uGraphs[0].getModel().graphUnionView(uGraphs);
+        } else {
+            DirectedGraphVar[] dGraphs = new DirectedGraphVar[graphs.length];
+            for (int i = 0; i < graphs.length; i++) {
+                dGraphs[i] = (DirectedGraphVar) graphs[i];
+            }
+            view = dGraphs[0].getModel().graphUnionView(dGraphs);
+        }
         ObjectHandle res = globalHandles.create(view);
         return res;
     }

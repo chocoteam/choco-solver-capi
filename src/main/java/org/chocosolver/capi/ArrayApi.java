@@ -1,10 +1,7 @@
 package org.chocosolver.capi;
 
 import org.chocosolver.solver.constraints.Constraint;
-import org.chocosolver.solver.variables.BoolVar;
-import org.chocosolver.solver.variables.IntVar;
-import org.chocosolver.solver.variables.SetVar;
-import org.chocosolver.solver.variables.Task;
+import org.chocosolver.solver.variables.*;
 import org.chocosolver.util.criteria.Criterion;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
@@ -308,6 +305,37 @@ public class ArrayApi {
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "setVar_length")
     public static int getSetVarArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
         SetVar[] array = globalHandles.get(arrayHandle);
+        return array.length;
+    }
+
+    // GraphVar Arrays
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graphVar_create")
+    public static ObjectHandle createGraphVarArray(IsolateThread thread, int size) {
+        GraphVar[] array = new GraphVar[size];
+        ObjectHandle res = globalHandles.create(array);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graphVar_set")
+    public static void setGraphVarArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                               ObjectHandle graphVarHandle, int index) {
+        GraphVar[] array = globalHandles.get(arrayHandle);
+        GraphVar var = globalHandles.get(graphVarHandle);
+        array[index] = var;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graphVar_get")
+    public static ObjectHandle getGraphVarArrayElement(IsolateThread thread, ObjectHandle arrayHandle, int index) {
+        GraphVar[] array = globalHandles.get(arrayHandle);
+        GraphVar var = array[index];
+        ObjectHandle res = globalHandles.create(var);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graphVar_length")
+    public static int getGraphVarArrayLength(IsolateThread thread, ObjectHandle arrayHandle) {
+        GraphVar[] array = globalHandles.get(arrayHandle);
         return array.length;
     }
 
