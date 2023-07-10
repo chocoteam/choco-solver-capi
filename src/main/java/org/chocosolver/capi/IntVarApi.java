@@ -24,20 +24,39 @@ public class IntVarApi {
     // --------------- //
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_sii")
-    public static ObjectHandle intVar_sii(IsolateThread thread, ObjectHandle modelHandle, CCharPointer name, int lb, int ub) {
+    public static ObjectHandle intVar_sii(IsolateThread thread, ObjectHandle modelHandle, CCharPointer name, int lb, int ub, boolean boundedDomain) {
         Model model = globalHandles.get(modelHandle);
-        IntVar var = model.intVar(CTypeConversion.toJavaString(name), lb, ub);
+        IntVar var = model.intVar(CTypeConversion.toJavaString(name), lb, ub, boundedDomain);
         ObjectHandle res = globalHandles.create(var);
         return res;
     }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_ii")
-    public static ObjectHandle intVar_ii(IsolateThread thread, ObjectHandle modelHandle, int lb, int ub) {
+    public static ObjectHandle intVar_ii(IsolateThread thread, ObjectHandle modelHandle, int lb, int ub, boolean boundedDomain) {
         Model model = globalHandles.get(modelHandle);
-        IntVar var = model.intVar(lb, ub);
+        IntVar var = model.intVar(lb, ub, boundedDomain);
         ObjectHandle res = globalHandles.create(var);
         return res;
     }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_s_arr")
+    public static ObjectHandle intVar_s_arr(IsolateThread thread, ObjectHandle modelHandle, CCharPointer name, ObjectHandle values) {
+        Model model = globalHandles.get(modelHandle);
+        int[] vals = globalHandles.get(values);
+        IntVar var = model.intVar(CTypeConversion.toJavaString(name), vals);
+        ObjectHandle res = globalHandles.create(var);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_arr")
+    public static ObjectHandle intVar_arr(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle values) {
+        Model model = globalHandles.get(modelHandle);
+        int[] vals = globalHandles.get(values);
+        IntVar var = model.intVar(vals);
+        ObjectHandle res = globalHandles.create(var);
+        return res;
+    }
+
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_i")
     public static ObjectHandle intVar_i(IsolateThread thread, ObjectHandle modelHandle, int value) {
@@ -82,6 +101,12 @@ public class IntVarApi {
     public static int getValue(IsolateThread thread, ObjectHandle intVarHandle) {
         IntVar var = globalHandles.get(intVarHandle);
         return var.getValue();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "hasEnumeratedDomain")
+    public static boolean hasEnumeratedDomain(IsolateThread thread, ObjectHandle intVarHandle) {
+        IntVar var = globalHandles.get(intVarHandle);
+        return var.hasEnumeratedDomain();
     }
 
 }
