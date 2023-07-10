@@ -109,6 +109,14 @@ public class IntVarApi {
         return var.hasEnumeratedDomain();
     }
 
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "getDomainValues")
+    public static ObjectHandle getDomainValues(IsolateThread thread, ObjectHandle intVarHandle) {
+        IntVar var = globalHandles.get(intVarHandle);
+        int[] values = var.stream().toArray();
+        ObjectHandle vals = globalHandles.create(values);
+        return vals;
+    }
+
 }
 
 
