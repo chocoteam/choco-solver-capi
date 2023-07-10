@@ -7,7 +7,6 @@ import org.chocosolver.solver.constraints.nary.circuit.CircuitConf;
 import org.chocosolver.solver.variables.*;
 import org.chocosolver.solver.constraints.nary.automata.FA.IAutomaton;
 import org.chocosolver.solver.constraints.nary.automata.FA.ICostAutomaton;
-import org.chocosolver.util.objects.graphs.DirectedGraph;
 import org.chocosolver.util.objects.graphs.MultivaluedDecisionDiagram;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
@@ -16,7 +15,6 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
 
-import java.util.Set;
 
 /**
  * C entrypoint API to create and manipulate constraints.
@@ -1110,12 +1108,12 @@ public class ConstraintApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_union_indices")
     public static ObjectHandle setUnion(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle setVarsHandle,
-                                        ObjectHandle indicesHandle, ObjectHandle unionHandle, int vOffset, int iOffset) {
+                                        ObjectHandle indicesHandle, ObjectHandle unionHandle, int iOffset) {
         SetVar[] setVars = globalHandles.get(setVarsHandle);
         Model model = globalHandles.get(modelHandle);
         SetVar unionVar = globalHandles.get(unionHandle);
         SetVar indicesVar = globalHandles.get(indicesHandle);
-        Constraint c = model.union(unionVar, vOffset, indicesVar, iOffset, setVars);
+        Constraint c = model.union(unionVar, indicesVar, iOffset, setVars);
         ObjectHandle res = globalHandles.create(c);
         return res;
     }
