@@ -8,6 +8,8 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.ObjectHandles;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CTypeConversion;
 
 import java.util.List;
 
@@ -91,5 +93,12 @@ public class SolverApi {
     public static long getSolutionCount(IsolateThread thread, ObjectHandle solverHandler) {
         Solver solver = globalHandles.get(solverHandler);
         return solver.getSolutionCount();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "limitTime")
+    public static void limitTime(IsolateThread thread, ObjectHandle solverHandler, CCharPointer limit) {
+        Solver solver = globalHandles.get(solverHandler);
+        String timeLimit = CTypeConversion.toJavaString(limit);
+        solver.limitTime(timeLimit);
     }
 }
