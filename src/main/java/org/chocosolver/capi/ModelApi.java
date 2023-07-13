@@ -2,6 +2,7 @@ package org.chocosolver.capi;
 
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.variables.Variable;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.ObjectHandles;
@@ -50,5 +51,12 @@ public class ModelApi {
         Solver solver = model.getSolver();
         ObjectHandle res = globalHandles.create(solver);
         return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "setObjective")
+    public static void setObjective(IsolateThread thread, ObjectHandle modelHandle, boolean maximize, ObjectHandle objectiveHandle) {
+        Model model = globalHandles.get(modelHandle);
+        Variable objective = globalHandles.get(objectiveHandle);
+        model.setObjective(maximize, objective);
     }
 }
