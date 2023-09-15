@@ -20,9 +20,9 @@ public class CriterionApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "time_counter")
     public static ObjectHandle timeCounter(IsolateThread thread, ObjectHandle modelHandle,
-                                           long timeLimitNanoSeconds) {
+                                           long timeLimitMilliSeconds) {
         Model model = globalHandles.get(modelHandle);
-        Criterion timeLimit = new TimeCounter(model, timeLimitNanoSeconds);
+        Criterion timeLimit = new TimeCounter(model, timeLimitMilliSeconds * 1000 * 1000);
         ObjectHandle res = globalHandles.create(timeLimit);
         return res;
     }
