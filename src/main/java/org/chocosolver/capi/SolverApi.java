@@ -2,6 +2,7 @@ package org.chocosolver.capi;
 
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.util.criteria.Criterion;
 import org.graalvm.nativeimage.IsolateThread;
@@ -100,5 +101,28 @@ public class SolverApi {
         Solver solver = globalHandles.get(solverHandler);
         String timeLimit = CTypeConversion.toJavaString(limit);
         solver.limitTime(timeLimit);
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "propagate")
+    public static boolean propagate(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        try{
+            solver.propagate();
+            return true;
+        }catch(ContradictionException e){
+            return false;
+        }
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "pushState")
+    public static void push_state(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        solver.getEnvironment().worldPush();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "popState")
+    public static void pop_state(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        solver.getEnvironment().worldPop();
     }
 }
