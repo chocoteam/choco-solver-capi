@@ -2177,6 +2177,20 @@ public class ConstraintApi {
         constraint.reifyWith(b);
     }
 
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "implies")
+    public static void implies(IsolateThread thread, ObjectHandle constraintHandle, ObjectHandle boolvarHandle) {
+        Constraint constraint = globalHandles.get(constraintHandle);
+        BoolVar b  = globalHandles.get(boolvarHandle);
+        constraint.implies(b);
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "implied_by")
+    public static void impliedBy(IsolateThread thread, ObjectHandle constraintHandle, ObjectHandle boolvarHandle) {
+        Constraint constraint = globalHandles.get(constraintHandle);
+        BoolVar b = globalHandles.get(boolvarHandle);
+        constraint.impliedBy(b);
+    }
+
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "if_then")
     public static void ifThen(IsolateThread thread, ObjectHandle modelHandle,
                                       ObjectHandle constraintHandleIf, ObjectHandle constraintHandleThen) {
@@ -2186,6 +2200,7 @@ public class ConstraintApi {
         Constraint constraintThen = globalHandles.get(constraintHandleThen);
         model.ifThen(constraintIf, constraintThen);
     }
+
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "is_satisfied")
     public static int isSatisfied(IsolateThread thread, ObjectHandle constraintHandle) {
