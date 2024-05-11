@@ -114,14 +114,14 @@ public class SolverApi {
         }
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "pushState")
-    public static void push_state(IsolateThread thread, ObjectHandle solverHandler) {
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "push_state")
+    public static void pushState(IsolateThread thread, ObjectHandle solverHandler) {
         Solver solver = globalHandles.get(solverHandler);
         solver.getEnvironment().worldPush();
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "popState")
-    public static void pop_state(IsolateThread thread, ObjectHandle solverHandler) {
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "pop_state")
+    public static void popState(IsolateThread thread, ObjectHandle solverHandler) {
         Solver solver = globalHandles.get(solverHandler);
         solver.getEnvironment().worldPop();
     }

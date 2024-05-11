@@ -113,7 +113,7 @@ public class SearchApi {
     }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "add_hint")
-    public static void add_hint(IsolateThread thread, ObjectHandle solverHandle,
+    public static void addHint(IsolateThread thread, ObjectHandle solverHandle,
                                               ObjectHandle intVarHandle, int value) {
         Solver solver = globalHandles.get(solverHandle);
         IntVar var = globalHandles.get(intVarHandle);
@@ -121,7 +121,7 @@ public class SearchApi {
     }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "rem_hints")
-    public static void rem_hints(IsolateThread thread, ObjectHandle solverHandle) {
+    public static void remHints(IsolateThread thread, ObjectHandle solverHandle) {
         Solver solver = globalHandles.get(solverHandle);
         solver.removeHints();
     }
