@@ -2191,17 +2191,6 @@ public class ConstraintApi {
         constraint.impliedBy(b);
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "if_then")
-    public static void ifThen(IsolateThread thread, ObjectHandle modelHandle,
-                                      ObjectHandle constraintHandleIf, ObjectHandle constraintHandleThen) {
-
-        Model model = globalHandles.get(modelHandle);
-        Constraint constraintIf = globalHandles.get(constraintHandleIf);
-        Constraint constraintThen = globalHandles.get(constraintHandleThen);
-        model.ifThen(constraintIf, constraintThen);
-    }
-
-
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "is_satisfied")
     public static int isSatisfied(IsolateThread thread, ObjectHandle constraintHandle) {
         Constraint constraint = globalHandles.get(constraintHandle);
