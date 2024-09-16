@@ -34,7 +34,7 @@ public class SolverApi {
         return res;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "findSolution")
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "find_solution")
     public static ObjectHandle findSolution(IsolateThread thread, ObjectHandle solverHandler,
                                             ObjectHandle stopArrayHandle) {
         Solver solver = globalHandles.get(solverHandler);
@@ -44,7 +44,7 @@ public class SolverApi {
         return res;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "findAllSolutions")
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "find_all_solutions")
     public static ObjectHandle findAllSolutions(IsolateThread thread, ObjectHandle solverHandler,
                                                 ObjectHandle stopArrayHandle) {
         Solver solver = globalHandles.get(solverHandler);
@@ -54,7 +54,7 @@ public class SolverApi {
         return res;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "findOptimalSolution")
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "find_optimal_solution")
     public static ObjectHandle findOptimalSolution(IsolateThread thread, ObjectHandle solverHandler,
                                                    ObjectHandle objectiveVariableHandler, boolean maximize,
                                                    ObjectHandle stopArrayHandle) {
@@ -66,7 +66,7 @@ public class SolverApi {
         return res;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "findAllOptimalSolutions")
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "find_all_optimal_solutions")
     public static ObjectHandle findAllOptimalSolutions(IsolateThread thread, ObjectHandle solverHandler,
                                                        ObjectHandle objectiveVariableHandler, boolean maximize,
                                                        ObjectHandle stopArrayHandle) {
@@ -78,25 +78,31 @@ public class SolverApi {
         return res;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "showStatistics")
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "show_statistics")
     public static void showStatistics(IsolateThread thread, ObjectHandle solverHandler) {
         Solver solver = globalHandles.get(solverHandler);
         solver.showStatistics();
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "showShortStatistics")
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "show_short_statistics")
     public static void showShortStatistics(IsolateThread thread, ObjectHandle solverHandler) {
         Solver solver = globalHandles.get(solverHandler);
         solver.showShortStatistics();
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "getSolutionCount")
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "show_restarts")
+    public static void showRestarts(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        solver.showRestarts();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_solution_count")
     public static long getSolutionCount(IsolateThread thread, ObjectHandle solverHandler) {
         Solver solver = globalHandles.get(solverHandler);
         return solver.getSolutionCount();
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "limitTime")
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "limit_time")
     public static void limitTime(IsolateThread thread, ObjectHandle solverHandler, CCharPointer limit) {
         Solver solver = globalHandles.get(solverHandler);
         String timeLimit = CTypeConversion.toJavaString(limit);
