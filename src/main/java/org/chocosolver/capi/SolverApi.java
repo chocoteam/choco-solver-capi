@@ -109,7 +109,7 @@ public class SolverApi {
         try{
             solver.propagate();
             return true;
-        }catch(ContradictionException e){
+        } catch(ContradictionException e){
             return false;
         }
     }

@@ -31,10 +31,26 @@ public class IntVarApi {
         return res;
     }
 
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_siib")
+    public static ObjectHandle intVar_sii(IsolateThread thread, ObjectHandle modelHandle, CCharPointer name, int lb, int ub,boolean boundedDomain) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar var = model.intVar(CTypeConversion.toJavaString(name), lb, ub, boundedDomain);
+        ObjectHandle res = globalHandles.create(var);
+        return res;
+    }
+
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_ii")
     public static ObjectHandle intVar_ii(IsolateThread thread, ObjectHandle modelHandle, int lb, int ub) {
         Model model = globalHandles.get(modelHandle);
         IntVar var = model.intVar(lb, ub);
+        ObjectHandle res = globalHandles.create(var);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "intVar_iib")
+    public static ObjectHandle intVar_ii(IsolateThread thread, ObjectHandle modelHandle, int lb, int ub, boolean boundedDomain) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar var = model.intVar(lb, ub, boundedDomain);
         ObjectHandle res = globalHandles.create(var);
         return res;
     }
