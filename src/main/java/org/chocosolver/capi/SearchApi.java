@@ -77,7 +77,7 @@ public class SearchApi {
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_default_search")
     public static void setDefaultSearch(IsolateThread thread, ObjectHandle solverHandle) {
         Solver solver = globalHandles.get(solverHandle);
-        solver.setSearch(Search.defaultSearch(solver.getModel()));
+        Search.defaultSearch(solver.getModel());
     }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_input_order_lb_search")
