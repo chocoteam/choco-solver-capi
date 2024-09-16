@@ -112,6 +112,22 @@ public class SearchApi {
         solver.setSearch(Search.failureRateBasedSearch(vars));
     }
 
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_pick_on_dom_search")
+    public static void setPickOnDomSearch(IsolateThread thread, ObjectHandle solverHandle,
+                                                 ObjectHandle intVarArrayHandle) {
+        Solver solver = globalHandles.get(solverHandle);
+        IntVar[] vars = globalHandles.get(intVarArrayHandle);
+        solver.setSearch(Search.pickOnDom(vars));
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_pick_on_fil_search")
+    public static void setPickOnFilSearch(IsolateThread thread, ObjectHandle solverHandle,
+                                          ObjectHandle intVarArrayHandle) {
+        Solver solver = globalHandles.get(solverHandle);
+        IntVar[] vars = globalHandles.get(intVarArrayHandle);
+        solver.setSearch(Search.pickOnFil(vars));
+    }
+
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "add_hint")
     public static void addHint(IsolateThread thread, ObjectHandle solverHandle,
                                               ObjectHandle intVarHandle, int value) {
