@@ -7,6 +7,8 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.ObjectHandles;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CTypeConversion;
 
 /**
  * C entrypoint API to manipulate Java Choco MDD objects.
@@ -22,11 +24,23 @@ public class MultivaluedDecisionDiagramApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_mdd_tuples")
     public static ObjectHandle createMDDTuples(IsolateThread thread, ObjectHandle intVarsHandle,
-                                               ObjectHandle tuplesHandle, boolean compactOnce, boolean sortTuple) {
+                                               ObjectHandle tuplesHandle, CCharPointer compact, boolean sortTuple) {
         IntVar[] intVars = globalHandles.get(intVarsHandle);
         int[][] tuples = globalHandles.get(tuplesHandle);
-	Tuples tuplesObject = new Tuples(tuples, true);
-        MultivaluedDecisionDiagram mdd = new MultivaluedDecisionDiagram(intVars, tuplesObject, compactOnce, sortTuple);
+	    Tuples tuplesObject = new Tuples(tuples, true);
+        String comp = CTypeConversion.toJavaString(compact);
+        MultivaluedDecisionDiagram.Compact c;
+        switch (comp) {
+            case "ONCE":
+                c = MultivaluedDecisionDiagram.Compact.ONCE;
+                break;
+            case "EACH":
+                c = MultivaluedDecisionDiagram.Compact.EACH;
+                break;
+            default:
+                c = MultivaluedDecisionDiagram.Compact.NEVER;
+        }
+        MultivaluedDecisionDiagram mdd = new MultivaluedDecisionDiagram(intVars, tuplesObject, c, sortTuple);
         ObjectHandle res = globalHandles.create(mdd);
         return res;
     }
