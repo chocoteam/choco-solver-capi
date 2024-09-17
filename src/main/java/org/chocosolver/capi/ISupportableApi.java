@@ -40,7 +40,7 @@ public class ISupportableApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "ne")
     public static ObjectHandle expNe(IsolateThread thread, int val) {
-        ISupportable c = eq(val);
+        ISupportable c = ne(val);
         ObjectHandle res = globalHandles.create(c);
         return res;
     }
