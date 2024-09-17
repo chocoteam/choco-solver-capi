@@ -1,6 +1,7 @@
 package org.chocosolver.capi;
 
 import org.chocosolver.solver.constraints.Constraint;
+import org.chocosolver.solver.constraints.extension.hybrid.ISupportable;
 import org.chocosolver.solver.variables.*;
 import org.chocosolver.util.criteria.Criterion;
 import org.graalvm.nativeimage.IsolateThread;
@@ -387,4 +388,37 @@ public class ArrayApi {
         return array.length;
     }
 
+    // ISupportable[]
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "isupportable_array_create")
+    public static ObjectHandle createISupportableArray(IsolateThread thread, int size) {
+        ISupportable[] array = new ISupportable[size];
+        ObjectHandle res = globalHandles.create(array);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "isupportable_array_set")
+    public static void setISupportableArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                                   ObjectHandle elementHandle, int index) {
+        ISupportable[] array = globalHandles.get(arrayHandle);
+        ISupportable element = globalHandles.get(elementHandle);
+        array[index] = element;
+    }
+
+    // ISupportable[][]
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "isupportable_2d_array_create")
+    public static ObjectHandle create2DISupportableArray(IsolateThread thread, int size) {
+        ISupportable[][] array = new ISupportable[size][];
+        ObjectHandle res = globalHandles.create(array);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "isupportable_2d_array_set")
+    public static void set2DISupportableArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                                     ObjectHandle elementHandle, int index) {
+        ISupportable[][] array = globalHandles.get(arrayHandle);
+        ISupportable[] element = globalHandles.get(elementHandle);
+        array[index] = element;
+    }
 }

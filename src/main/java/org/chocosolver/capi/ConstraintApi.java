@@ -3,6 +3,8 @@ package org.chocosolver.capi;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.constraints.extension.Tuples;
+import org.chocosolver.solver.constraints.extension.hybrid.HybridTuples;
+import org.chocosolver.solver.constraints.extension.hybrid.ISupportable;
 import org.chocosolver.solver.constraints.nary.circuit.CircuitConf;
 import org.chocosolver.solver.variables.*;
 import org.chocosolver.solver.constraints.nary.automata.FA.IAutomaton;
@@ -316,6 +318,19 @@ public class ConstraintApi {
         Tuples tuplesObject = new Tuples(tuples, feasible);
         Constraint table = model.table(vars, tuplesObject, algoS);
         ObjectHandle res = globalHandles.create(table);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "hybrid_table")
+    public static ObjectHandle hybridTable(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle varsHandle,
+                                           ObjectHandle htuplesHandle) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] vars = globalHandles.get(varsHandle);
+        ISupportable[][] htuples = globalHandles.get(htuplesHandle);
+        HybridTuples tuplesObject = new HybridTuples();
+        tuplesObject.add(htuples);
+        Constraint htable = model.table(vars, tuplesObject);
+        ObjectHandle res = globalHandles.create(htable);
         return res;
     }
 
