@@ -805,7 +805,7 @@ public class ConstraintApi {
     public static ObjectHandle lexChainLess(IsolateThread thread, ObjectHandle modelHandle,
                                             ObjectHandle intVarsHandle) {
         Model model = globalHandles.get(modelHandle);
-        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        IntVar[][] intVars = globalHandles.get(intVarsHandle);
         Constraint lexChainLess = model.lexChainLess(intVars);
         ObjectHandle res = globalHandles.create(lexChainLess);
         return res;
@@ -817,7 +817,7 @@ public class ConstraintApi {
     public static ObjectHandle lexChainLessEq(IsolateThread thread, ObjectHandle modelHandle,
                                               ObjectHandle intVarsHandle) {
         Model model = globalHandles.get(modelHandle);
-        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        IntVar[][] intVars = globalHandles.get(intVarsHandle);
         Constraint lexChainLessEq = model.lexChainLessEq(intVars);
         ObjectHandle res = globalHandles.create(lexChainLessEq);
         return res;
