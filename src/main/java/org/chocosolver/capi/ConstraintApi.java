@@ -827,7 +827,7 @@ public class ConstraintApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "lexLess")
     public static ObjectHandle lexLess(IsolateThread thread, ObjectHandle modelHandle,
-                                              ObjectHandle intVarsHandle1, ObjectHandle intVarsHandle2) {
+                                       ObjectHandle intVarsHandle1, ObjectHandle intVarsHandle2) {
         Model model = globalHandles.get(modelHandle);
         IntVar[] intVars1 = globalHandles.get(intVarsHandle1);
         IntVar[] intVars2 = globalHandles.get(intVarsHandle2);
