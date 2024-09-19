@@ -3,6 +3,7 @@ package org.chocosolver.capi;
 import com.oracle.svm.core.log.Log;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.constraints.extension.hybrid.ISupportable;
+import org.chocosolver.solver.constraints.nary.cnf.ILogical;
 import org.chocosolver.solver.constraints.nary.cnf.LogOp;
 import org.chocosolver.solver.variables.*;
 import org.chocosolver.util.criteria.Criterion;
@@ -424,20 +425,20 @@ public class ArrayApi {
         array[index] = element;
     }
 
-    // LogOp[]
+    // ILogical[]
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "logop_array_create")
-    public static ObjectHandle createLogOpArray(IsolateThread thread, int size) {
-        LogOp[] array = new LogOp[size];
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "ilogical_array_create")
+    public static ObjectHandle createILogicalArray(IsolateThread thread, int size) {
+        ILogical[] array = new ILogical[size];
         ObjectHandle res = globalHandles.create(array);
         return res;
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "logop_array_set")
-    public static void setLogOpArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
-                                                   ObjectHandle elementHandle, int index) {
-        LogOp[] array = globalHandles.get(arrayHandle);
-        LogOp element = globalHandles.get(elementHandle);
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "ilogical_array_set")
+    public static void setILogicalArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
+                                               ObjectHandle elementHandle, int index) {
+        ILogical[] array = globalHandles.get(arrayHandle);
+        ILogical element = globalHandles.get(elementHandle);
         array[index] = element;
     }
 }
