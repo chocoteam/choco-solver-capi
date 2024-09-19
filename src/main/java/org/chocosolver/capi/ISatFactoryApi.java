@@ -18,6 +18,7 @@ public class ISatFactoryApi {
 
     private static ObjectHandles globalHandles = ObjectHandles.getGlobal();
 
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "add_clauses_logop")
     public static boolean addClauses(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle TREE) {
         Model model = globalHandles.get(modelHandle);
         LogOp ltree = globalHandles.get(TREE);
