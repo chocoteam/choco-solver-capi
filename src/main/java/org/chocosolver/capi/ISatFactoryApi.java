@@ -221,8 +221,8 @@ public class ISatFactoryApi {
         return model.addClausesMaxBoolArrayLessEqVar(bvars, btarget);
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "add_clauses_sum_bool_array_less_eq_kvar")
-    public static boolean addClausesSumBoolArrayLessEqKVar(IsolateThread thread, ObjectHandle modelHandle,
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "add_clauses_sum_bool_array_less_eq_var")
+    public static boolean addClausesSumBoolArrayLessEqVar(IsolateThread thread, ObjectHandle modelHandle,
                                                            ObjectHandle BOOLVARS, ObjectHandle TARGET) {
         Model model = globalHandles.get(modelHandle);
         BoolVar[] bvars = globalHandles.get(BOOLVARS);
