@@ -2,6 +2,7 @@ package org.chocosolver.capi;
 
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.ParallelPortfolio;
+import org.chocosolver.solver.Solution;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.ObjectHandles;
@@ -51,6 +52,14 @@ public class ParallelPortfolioApi {
         ParallelPortfolio pf = globalHandles.get(pfHandle);
         Model bestModel = pf.getBestModel();
         ObjectHandle res = globalHandles.create(bestModel);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_best_solution")
+    public static ObjectHandle getBestSolution(IsolateThread thread, ObjectHandle pfHandle) {
+        ParallelPortfolio pf = globalHandles.get(pfHandle);
+        Solution best = pf.streamSolutions().reduce((first, second) -> second).get();
+        ObjectHandle res = globalHandles.create(best);
         return res;
     }
 }
