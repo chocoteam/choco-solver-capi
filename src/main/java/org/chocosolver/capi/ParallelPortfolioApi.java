@@ -27,8 +27,8 @@ public class ParallelPortfolioApi {
 
     // Methods
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "steal_nogoods_on_restart")
-    public static void stealNoGoodsOnRestart(IsolateThread thread, ObjectHandle pfHandle) {
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "steal_nogoods_on_restarts")
+    public static void stealNoGoodsOnRestarts(IsolateThread thread, ObjectHandle pfHandle) {
         ParallelPortfolio pf = globalHandles.get(pfHandle);
         pf.stealNogoodsOnRestarts();
     }
@@ -41,7 +41,7 @@ public class ParallelPortfolioApi {
     }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "solve")
-    public static boolean addModel(IsolateThread thread, ObjectHandle pfHandle) {
+    public static boolean solve(IsolateThread thread, ObjectHandle pfHandle) {
         ParallelPortfolio pf = globalHandles.get(pfHandle);
         return pf.solve();
     }
