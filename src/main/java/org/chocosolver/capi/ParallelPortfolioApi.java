@@ -18,7 +18,7 @@ public class ParallelPortfolioApi {
 
     // Constructor
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_parallel_porfolio")
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_parallel_portfolio")
     public static ObjectHandle createParallelPortfolio(IsolateThread thread, boolean searchAutoConf) {
         ParallelPortfolio pf = new ParallelPortfolio(searchAutoConf);
         ObjectHandle res = globalHandles.create(pf);
