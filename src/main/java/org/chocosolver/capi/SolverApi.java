@@ -3,6 +3,7 @@ package org.chocosolver.capi;
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.exception.ContradictionException;
+import org.chocosolver.solver.search.SearchState;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.util.criteria.Criterion;
 import org.graalvm.nativeimage.IsolateThread;
@@ -130,5 +131,49 @@ public class SolverApi {
     public static void popState(IsolateThread thread, ObjectHandle solverHandler) {
         Solver solver = globalHandles.get(solverHandler);
         solver.getEnvironment().worldPop();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_time_count")
+    public static float getTimeCount(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        return solver.getTimeCount();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_node_count")
+    public static long getNodeCount(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        return solver.getNodeCount();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_backtrack_count")
+    public static long getBackTrackCount(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        return solver.getBackTrackCount();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_fail_count")
+    public static long getFailCount(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        return solver.getFailCount();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_restart_count")
+    public static long getRestartCount(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        return solver.getRestartCount();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "is_objective_optimal")
+    public static boolean isObjectiveOptimal(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        return solver.isObjectiveOptimal();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_search_state")
+    public static CCharPointer getSearchState(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        SearchState state = solver.getSearchState();
+        CCharPointer cstate = CTypeConversion.toCString(state.toString()).get();
+        return cstate;
     }
 }
