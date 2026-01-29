@@ -110,6 +110,12 @@ public class SolverApi {
         solver.limitTime(timeLimit);
     }
 
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "limit_time_ms")
+    public static void limitTime_ms(IsolateThread thread, ObjectHandle solverHandler, long limit) {
+        Solver solver = globalHandles.get(solverHandler);
+        solver.limitTime(limit);
+    }
+
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "propagate")
     public static boolean propagate(IsolateThread thread, ObjectHandle solverHandler) {
         Solver solver = globalHandles.get(solverHandler);
