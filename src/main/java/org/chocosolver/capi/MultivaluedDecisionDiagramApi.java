@@ -10,6 +10,8 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
 
+import java.util.OptionalInt;
+
 /**
  * C entrypoint API to manipulate Java Choco MDD objects.
  * @author Dimitri Justeau-Allaire.
@@ -25,9 +27,17 @@ public class MultivaluedDecisionDiagramApi {
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_mdd_tuples")
     public static ObjectHandle createMDDTuples(IsolateThread thread, ObjectHandle intVarsHandle,
                                                ObjectHandle tuplesHandle, CCharPointer compact, boolean sortTuple) {
+        return createMDDTuples(thread, intVarsHandle, tuplesHandle, compact, sortTuple, OptionalInt.empty());
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_mdd_tuples")
+    public static ObjectHandle createMDDTuples(IsolateThread thread, ObjectHandle intVarsHandle,
+                                               ObjectHandle tuplesHandle, CCharPointer compact, boolean sortTuple,
+                                               OptionalInt universalValue) {
         IntVar[] intVars = globalHandles.get(intVarsHandle);
         int[][] tuples = globalHandles.get(tuplesHandle);
-	    Tuples tuplesObject = new Tuples(tuples, true);
+        Tuples tuplesObject = new Tuples(tuples, true, universalValue);
         String comp = CTypeConversion.toJavaString(compact);
         MultivaluedDecisionDiagram.Compact c;
         switch (comp) {

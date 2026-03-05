@@ -38,7 +38,15 @@ public class ParallelPortfolioApi {
     public static void addModel(IsolateThread thread, ObjectHandle pfHandle, ObjectHandle modelHandle, boolean reliable) {
         ParallelPortfolio pf = globalHandles.get(pfHandle);
         Model model = globalHandles.get(modelHandle);
-        pf.addModel(model, reliable);
+        pf.addModel(model, false, reliable);
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "add_model")
+    public static void addModel(IsolateThread thread, ObjectHandle pfHandle, ObjectHandle modelHandle,
+                                boolean unalterable, boolean reliable) {
+        ParallelPortfolio pf = globalHandles.get(pfHandle);
+        Model model = globalHandles.get(modelHandle);
+        pf.addModel(model, unalterable, reliable);
     }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "solve")
