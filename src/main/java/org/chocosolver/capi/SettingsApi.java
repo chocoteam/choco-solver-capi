@@ -123,11 +123,4 @@ public class SettingsApi {
         settings.setNbMaxLearntClauses(n);
         return settingsHandle;
     }
-
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set")
-    public static ObjectHandle set(IsolateThread thread, ObjectHandle settingsHandle, String key , ObjectHandle value) {
-        Settings settings = globalHandles.get(settingsHandle);
-        settings.set(key, value);
-        return settingsHandle;
-    }
 }

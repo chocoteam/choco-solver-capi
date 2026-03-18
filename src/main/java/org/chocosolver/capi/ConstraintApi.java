@@ -313,26 +313,25 @@ public class ConstraintApi {
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "table")
     public static ObjectHandle table(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle varsHandle,
                                      ObjectHandle tuplesHandle, boolean feasible, CCharPointer algo) {
-        return tableStar(thread, modelHandle, varsHandle, tuplesHandle, feasible, algo, OptionalInt.empty());
-    }
-
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "table_universal_value")
-    public static ObjectHandle tableStar(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle varsHandle,
-                                         ObjectHandle tuplesHandle, boolean feasible, CCharPointer algo,
-                                         int universalValue) {
-        return tableStar(thread, modelHandle, varsHandle, tuplesHandle, feasible, algo, OptionalInt.of(universalValue));
-    }
-
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "table_universal_value")
-    private static ObjectHandle tableStar(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle varsHandle,
-                                         ObjectHandle tuplesHandle, boolean feasible, CCharPointer algo,
-                                         OptionalInt universalValue) {
         Model model = globalHandles.get(modelHandle);
         IntVar[] vars = globalHandles.get(varsHandle);
         int[][] tuples = globalHandles.get(tuplesHandle);
         String algoS = CTypeConversion.toJavaString(algo);
-        Tuples tuplesObject = new Tuples(tuples, feasible, universalValue);
+        Tuples tuplesObject = new Tuples(tuples, feasible, OptionalInt.empty());
+        Constraint table = model.table(vars, tuplesObject, algoS);
+        ObjectHandle res = globalHandles.create(table);
+        return res;
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "table_universal_value")
+    private static ObjectHandle tableStar(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle varsHandle,
+                                         ObjectHandle tuplesHandle, boolean feasible, CCharPointer algo,
+                                         int universalValue) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] vars = globalHandles.get(varsHandle);
+        int[][] tuples = globalHandles.get(tuplesHandle);
+        String algoS = CTypeConversion.toJavaString(algo);
+        Tuples tuplesObject = new Tuples(tuples, feasible, OptionalInt.of(universalValue));
         Constraint table = model.table(vars, tuplesObject, algoS);
         ObjectHandle res = globalHandles.create(table);
         return res;

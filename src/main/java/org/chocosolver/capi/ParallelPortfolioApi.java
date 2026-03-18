@@ -20,8 +20,8 @@ public class ParallelPortfolioApi {
     // Constructor
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_parallel_portfolio")
-    public static ObjectHandle createParallelPortfolio(IsolateThread thread, boolean searchAutoConf) {
-        ParallelPortfolio pf = new ParallelPortfolio(searchAutoConf);
+    public static ObjectHandle createParallelPortfolio(IsolateThread thread) {
+        ParallelPortfolio pf = new ParallelPortfolio();
         ObjectHandle res = globalHandles.create(pf);
         return res;
     }
@@ -35,13 +35,13 @@ public class ParallelPortfolioApi {
     }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "add_model")
-    public static void addModel(IsolateThread thread, ObjectHandle pfHandle, ObjectHandle modelHandle, boolean reliable) {
+    public static void addModel(IsolateThread thread, ObjectHandle pfHandle, ObjectHandle modelHandle) {
         ParallelPortfolio pf = globalHandles.get(pfHandle);
         Model model = globalHandles.get(modelHandle);
-        pf.addModel(model, false, reliable);
+        pf.addModel(model, false, true);
     }
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "add_model")
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "add_model_b_b")
     public static void addModel(IsolateThread thread, ObjectHandle pfHandle, ObjectHandle modelHandle,
                                 boolean unalterable, boolean reliable) {
         ParallelPortfolio pf = globalHandles.get(pfHandle);

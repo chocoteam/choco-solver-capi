@@ -27,17 +27,34 @@ public class MultivaluedDecisionDiagramApi {
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_mdd_tuples")
     public static ObjectHandle createMDDTuples(IsolateThread thread, ObjectHandle intVarsHandle,
                                                ObjectHandle tuplesHandle, CCharPointer compact, boolean sortTuple) {
-        return createMDDTuples(thread, intVarsHandle, tuplesHandle, compact, sortTuple, OptionalInt.empty());
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        int[][] tuples = globalHandles.get(tuplesHandle);
+        Tuples tuplesObject = new Tuples(tuples, true, OptionalInt.empty());
+        String comp = CTypeConversion.toJavaString(compact);
+        MultivaluedDecisionDiagram.Compact c;
+        switch (comp) {
+            case "ONCE":
+                c = MultivaluedDecisionDiagram.Compact.ONCE;
+                break;
+            case "EACH":
+                c = MultivaluedDecisionDiagram.Compact.EACH;
+                break;
+            default:
+                c = MultivaluedDecisionDiagram.Compact.NEVER;
+        }
+        MultivaluedDecisionDiagram mdd = new MultivaluedDecisionDiagram(intVars, tuplesObject, c, sortTuple);
+        ObjectHandle res = globalHandles.create(mdd);
+        return res;
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_mdd_tuples")
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_mdd_tuples_u")
     public static ObjectHandle createMDDTuples(IsolateThread thread, ObjectHandle intVarsHandle,
                                                ObjectHandle tuplesHandle, CCharPointer compact, boolean sortTuple,
-                                               OptionalInt universalValue) {
+                                               int universalValue) {
         IntVar[] intVars = globalHandles.get(intVarsHandle);
         int[][] tuples = globalHandles.get(tuplesHandle);
-        Tuples tuplesObject = new Tuples(tuples, true, universalValue);
+        Tuples tuplesObject = new Tuples(tuples, true, OptionalInt.of(universalValue));
         String comp = CTypeConversion.toJavaString(compact);
         MultivaluedDecisionDiagram.Compact c;
         switch (comp) {
