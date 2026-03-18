@@ -1,6 +1,7 @@
 package org.chocosolver.capi;
 
 import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.search.limits.FailCounter;
 import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.variables.IntVar;
 import org.graalvm.nativeimage.IsolateThread;
@@ -120,6 +121,14 @@ public class SearchApi {
         solver.setSearch(Search.pickOnDom(vars));
     }
 
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_round_robin_search")
+    public static void setRoundRobinSearch(IsolateThread thread, ObjectHandle solverHandle,
+                                          ObjectHandle intVarArrayHandle) {
+        Solver solver = globalHandles.get(solverHandle);
+        IntVar[] vars = globalHandles.get(intVarArrayHandle);
+        solver.setSearch(Search.roundRobinSearch(vars));
+    }
+
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "add_hint")
     public static void addHint(IsolateThread thread, ObjectHandle solverHandle,
                                               ObjectHandle intVarHandle, int value) {
@@ -132,6 +141,39 @@ public class SearchApi {
     public static void remHints(IsolateThread thread, ObjectHandle solverHandle) {
         Solver solver = globalHandles.get(solverHandle);
         solver.removeHints();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "setNoGoodRecordingFromSolutions")
+    public static void setNoGoodRecordingFromSolutions(IsolateThread thread, ObjectHandle solverHandle, ObjectHandle intVarArrayHandle) {
+        Solver solver = globalHandles.get(solverHandle);
+        IntVar[] vars = globalHandles.get(intVarArrayHandle);
+        solver.setNoGoodRecordingFromSolutions(vars);
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "setNoGoodRecordingFromRestarts")
+    public static void setNoGoodRecordingFromRestarts(IsolateThread thread, ObjectHandle solverHandle) {
+        Solver solver = globalHandles.get(solverHandle);
+        solver.setNoGoodRecordingFromRestarts();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "setGeometricalRestart")
+    public static void setGeometricalRestart(IsolateThread thread, ObjectHandle solverHandle,
+                                             long base, double geometricalFactor, int restartLimit) {
+        Solver solver = globalHandles.get(solverHandle);
+        solver.setGeometricalRestart(base, geometricalFactor, new FailCounter(solver.getModel(), 0), restartLimit);
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "setLubyRestart")
+    public static void setLubyRestart(IsolateThread thread, ObjectHandle solverHandle,
+                                             int scaleFactor, int restartLimit) {
+        Solver solver = globalHandles.get(solverHandle);
+        solver.setLubyRestart(scaleFactor, new FailCounter(solver.getModel(), 0), restartLimit);
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "setRestartOnSolutions")
+    public static void setRestartOnSolutions(IsolateThread thread, ObjectHandle solverHandle) {
+        Solver solver = globalHandles.get(solverHandle);
+        solver.setRestartOnSolutions();
     }
 
 }
