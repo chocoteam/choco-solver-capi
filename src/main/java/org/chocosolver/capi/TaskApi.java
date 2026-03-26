@@ -60,16 +60,6 @@ public class TaskApi {
 
     // Methods
 
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "ensure_bound_consistency")
-    public static void ensureBoundConsistency(IsolateThread thread, ObjectHandle taskHandle) {
-        Task t = globalHandles.get(taskHandle);
-        try {
-            t.ensureBoundConsistency();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_start")
     public static ObjectHandle getStart(IsolateThread thread, ObjectHandle taskHandle) {
         Task t = globalHandles.get(taskHandle);

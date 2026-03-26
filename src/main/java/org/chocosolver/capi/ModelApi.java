@@ -22,6 +22,14 @@ public class ModelApi {
 
     // Create and access model
 
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "createModel_s_s")
+    public static ObjectHandle createModel(IsolateThread thread, CCharPointer name, ObjectHandle settingsHandle) {
+        String jName = CTypeConversion.toJavaString(name);
+        Model model = new Model(jName, globalHandles.get(settingsHandle));
+        ObjectHandle res = globalHandles.create(model);
+        return res;
+    }
+
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "createModel_s")
     public static ObjectHandle createModel(IsolateThread thread, CCharPointer name) {
         String jName = CTypeConversion.toJavaString(name);

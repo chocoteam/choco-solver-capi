@@ -17,6 +17,8 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
 
+import java.util.OptionalInt;
+
 
 /**
  * C entrypoint API to create and manipulate constraints.
@@ -315,22 +317,21 @@ public class ConstraintApi {
         IntVar[] vars = globalHandles.get(varsHandle);
         int[][] tuples = globalHandles.get(tuplesHandle);
         String algoS = CTypeConversion.toJavaString(algo);
-        Tuples tuplesObject = new Tuples(tuples, feasible);
+        Tuples tuplesObject = new Tuples(tuples, feasible, OptionalInt.empty());
         Constraint table = model.table(vars, tuplesObject, algoS);
         ObjectHandle res = globalHandles.create(table);
         return res;
     }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "table_universal_value")
-    public static ObjectHandle tableStar(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle varsHandle,
+    private static ObjectHandle tableStar(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle varsHandle,
                                          ObjectHandle tuplesHandle, boolean feasible, CCharPointer algo,
                                          int universalValue) {
         Model model = globalHandles.get(modelHandle);
         IntVar[] vars = globalHandles.get(varsHandle);
         int[][] tuples = globalHandles.get(tuplesHandle);
         String algoS = CTypeConversion.toJavaString(algo);
-        Tuples tuplesObject = new Tuples(tuples, feasible);
-        tuplesObject.setUniversalValue(universalValue);
+        Tuples tuplesObject = new Tuples(tuples, feasible, OptionalInt.of(universalValue));
         Constraint table = model.table(vars, tuplesObject, algoS);
         ObjectHandle res = globalHandles.create(table);
         return res;
@@ -679,12 +680,12 @@ public class ConstraintApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "cumulative")
     public static ObjectHandle cumulative(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle tasksHandle,
-                                          ObjectHandle heightsHandle, ObjectHandle capacityHandle, boolean incr) {
+                                          ObjectHandle heightsHandle, ObjectHandle capacityHandle) {
         Model model = globalHandles.get(modelHandle);
         Task[] tasks = globalHandles.get(tasksHandle);
         IntVar[] heights = globalHandles.get(heightsHandle);
         IntVar capacity = globalHandles.get(capacityHandle);
-        Constraint cumulative = model.cumulative(tasks, heights, capacity, incr);
+        Constraint cumulative = model.cumulative(tasks, heights, capacity);
         ObjectHandle res = globalHandles.create(cumulative);
         return res;
     }
