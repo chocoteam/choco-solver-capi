@@ -10,6 +10,8 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
 
+import java.util.OptionalInt;
+
 /**
  * C entrypoint API to manipulate Java Choco MDD objects.
  * @author Dimitri Justeau-Allaire.
@@ -27,7 +29,32 @@ public class MultivaluedDecisionDiagramApi {
                                                ObjectHandle tuplesHandle, CCharPointer compact, boolean sortTuple) {
         IntVar[] intVars = globalHandles.get(intVarsHandle);
         int[][] tuples = globalHandles.get(tuplesHandle);
-	    Tuples tuplesObject = new Tuples(tuples, true);
+        Tuples tuplesObject = new Tuples(tuples, true, OptionalInt.empty());
+        String comp = CTypeConversion.toJavaString(compact);
+        MultivaluedDecisionDiagram.Compact c;
+        switch (comp) {
+            case "ONCE":
+                c = MultivaluedDecisionDiagram.Compact.ONCE;
+                break;
+            case "EACH":
+                c = MultivaluedDecisionDiagram.Compact.EACH;
+                break;
+            default:
+                c = MultivaluedDecisionDiagram.Compact.NEVER;
+        }
+        MultivaluedDecisionDiagram mdd = new MultivaluedDecisionDiagram(intVars, tuplesObject, c, sortTuple);
+        ObjectHandle res = globalHandles.create(mdd);
+        return res;
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_mdd_tuples_u")
+    public static ObjectHandle createMDDTuples(IsolateThread thread, ObjectHandle intVarsHandle,
+                                               ObjectHandle tuplesHandle, CCharPointer compact, boolean sortTuple,
+                                               int universalValue) {
+        IntVar[] intVars = globalHandles.get(intVarsHandle);
+        int[][] tuples = globalHandles.get(tuplesHandle);
+        Tuples tuplesObject = new Tuples(tuples, true, OptionalInt.of(universalValue));
         String comp = CTypeConversion.toJavaString(compact);
         MultivaluedDecisionDiagram.Compact c;
         switch (comp) {

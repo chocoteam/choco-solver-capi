@@ -5,6 +5,7 @@ import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.search.SearchState;
 import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.variables.Variable;
 import org.chocosolver.util.criteria.Criterion;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
@@ -95,6 +96,25 @@ public class SolverApi {
     public static void showRestarts(IsolateThread thread, ObjectHandle solverHandler) {
         Solver solver = globalHandles.get(solverHandler);
         solver.showRestarts();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "showDecisions")
+    public static void showDecisions(IsolateThread thread, ObjectHandle solverHandler, int n) {
+        Solver solver = globalHandles.get(solverHandler);
+        solver.showDecisions(n);
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "showSolutions")
+    public static void showSolutions(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        solver.showSolutions();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "showSolutions_v")
+    public static void showSolutions(IsolateThread thread, ObjectHandle solverHandler, ObjectHandle varArrayHandle) {
+        Solver solver = globalHandles.get(solverHandler);
+        Variable[] vars = globalHandles.get(varArrayHandle);
+        solver.showSolutions(vars);
     }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_solution_count")
