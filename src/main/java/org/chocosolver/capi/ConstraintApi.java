@@ -2235,4 +2235,18 @@ public class ConstraintApi {
         }
         return 2;
     }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "getStatus")
+    public static int getStatus(IsolateThread thread, ObjectHandle constraintHandle) {
+        Constraint constraint = globalHandles.get(constraintHandle);
+        switch (constraint.getStatus()) {
+            case FREE:
+                return 0;
+            case POSTED:
+                return 1;
+            case REIFIED:
+                return 2;
+        }
+        return 3; // To detect invalid values
+    }
 }
