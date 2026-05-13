@@ -1,6 +1,7 @@
 package org.chocosolver.capi;
 
 import org.chocosolver.solver.Model;
+import org.chocosolver.solver.SettingsBuilder;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.variables.Variable;
 import org.graalvm.nativeimage.IsolateThread;
@@ -25,7 +26,8 @@ public class ModelApi {
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "createModel_s_s")
     public static ObjectHandle createModel(IsolateThread thread, CCharPointer name, ObjectHandle settingsHandle) {
         String jName = CTypeConversion.toJavaString(name);
-        Model model = new Model(jName, globalHandles.get(settingsHandle));
+        SettingsBuilder settings = globalHandles.get(settingsHandle);
+        Model model = new Model(jName, settings);
         ObjectHandle res = globalHandles.create(model);
         return res;
     }
