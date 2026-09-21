@@ -114,17 +114,6 @@ public class ConstraintApi {
         return res;
     }
 
-    // allDifferent TODO add other variants
-
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "allDifferent")
-    public static ObjectHandle allDifferent(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle intVarArrayHandle) {
-        Model model = globalHandles.get(modelHandle);
-        IntVar[] vars = globalHandles.get(intVarArrayHandle);
-        Constraint allDiff = model.allDifferent(vars);
-        ObjectHandle res = globalHandles.create(allDiff);
-        return res;
-    }
-
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "allDifferent")
     public static ObjectHandle allDifferent(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle intVarArrayHandle, CCharPointer algo) {
         Model model = globalHandles.get(modelHandle);
