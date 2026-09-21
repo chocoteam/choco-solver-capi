@@ -188,6 +188,22 @@ public class IntVarApi {
         }
     }
 
+    /**
+     * Removes a value from the domain of a variable.
+     * Intended for use inside Python propagator callbacks.
+     *
+     * @return 1 if the domain changed, 0 if the value was not present, -1 if contradiction
+     */
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "removeValue")
+    public static int removeValue(IsolateThread thread, ObjectHandle intVarHandle, int value) {
+        IntVar var = globalHandles.get(intVarHandle);
+        try {
+            return var.removeValue(value, Cause.Null) ? 1 : 0;
+        } catch (ContradictionException e) {
+            return -1;
+        }
+    }
+
 }
 
 
