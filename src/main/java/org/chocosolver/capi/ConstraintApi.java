@@ -125,6 +125,15 @@ public class ConstraintApi {
         return res;
     }
 
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "allDifferent")
+    public static ObjectHandle allDifferent(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle intVarArrayHandle, String algo) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] vars = globalHandles.get(intVarArrayHandle);
+        Constraint allDiff = model.allDifferent(vars, algo);
+        ObjectHandle res = globalHandles.create(allDiff);
+        return res;
+    }
+
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "allDifferentExcept0")
     public static ObjectHandle allDifferentExcept0(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle intVarArrayHandle) {
         Model model = globalHandles.get(modelHandle);
