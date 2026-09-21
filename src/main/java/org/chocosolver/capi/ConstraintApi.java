@@ -2248,4 +2248,30 @@ public class ConstraintApi {
         }
         return 3; // To detect invalid values
     }
+
+    // PYTHON PROPAGATOR
+
+    /**
+     * Creates a constraint backed by a Python callable via the C bridge.
+     *
+     * @param thread        GraalVM isolate thread
+     * @param modelHandle   handle to the Choco Model
+     * @param varsHandle    handle to IntVar[] the propagator operates on
+     * @param propagatorId  unique ID used by the C bridge to dispatch to the right Python callback
+     * @param callback      C function pointer to the static bridge in backend.c
+     * @return handle to the created Constraint
+     */
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_python_propagator")
+    public static ObjectHandle create_python_propagator(
+            IsolateThread thread,
+            ObjectHandle modelHandle,
+            ObjectHandle varsHandle,
+            long propagatorId,
+            PythonPropagator.PropagateFn callback) {
+        Model model = globalHandles.get(modelHandle);
+        IntVar[] vars = globalHandles.get(varsHandle);
+        PythonPropagator prop = new PythonPropagator(vars, propagatorId, callback);
+        Constraint c = new Constraint("PythonPropagator", prop);
+        return globalHandles.create(c);
+    }
 }
