@@ -176,4 +176,33 @@ public class SearchApi {
         solver.setRestartOnSolutions();
     }
 
+    /**
+     * Installs a custom search strategy backed by Python variable and value selectors.
+     *
+     * @param thread          GraalVM isolate thread
+     * @param solverHandle    handle to the Choco Solver
+     * @param varsHandle      handle to IntVar[] — the variables to branch on
+     * @param varSelectorId   unique ID for the variable selector callback
+     * @param varCallback     C bridge for the variable selector
+     * @param valSelectorId   unique ID for the value selector callback
+     * @param valCallback     C bridge for the value selector
+     */
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "set_custom_search")
+    public static void setCustomSearch(
+            IsolateThread thread,
+            ObjectHandle solverHandle,
+            ObjectHandle varsHandle,
+            long varSelectorId,
+            PythonSearch.VarSelectorFn varCallback,
+            long valSelectorId,
+            PythonSearch.ValSelectorFn valCallback) {
+        Solver solver = globalHandles.get(solverHandle);
+        IntVar[] vars = globalHandles.get(varsHandle);
+        PythonSearch.PythonVariableSelector varSel =
+                new PythonSearch.PythonVariableSelector(vars, varSelectorId, varCallback);
+        PythonSearch.PythonValueSelector valSel =
+                new PythonSearch.PythonValueSelector(vars, valSelectorId, valCallback);
+        solver.setSearch(Search.intVarSearch(varSel, valSel, vars));
+    }
+
 }

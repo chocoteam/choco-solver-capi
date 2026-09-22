@@ -2261,8 +2261,8 @@ public class ConstraintApi {
      * @param callback      C function pointer to the static bridge in backend.c
      * @return handle to the created Constraint
      */
-    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_python_propagator")
-    public static ObjectHandle create_python_propagator(
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_custom_constraint")
+    public static ObjectHandle create_custom_constraint(
             IsolateThread thread,
             ObjectHandle modelHandle,
             ObjectHandle varsHandle,
