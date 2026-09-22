@@ -1487,7 +1487,7 @@ public class ConstraintApi {
     public static ObjectHandle nbNodes(IsolateThread thread, ObjectHandle modelHandle,
                                        ObjectHandle graphVarHandle, ObjectHandle intVarHandle) {
         Model model = globalHandles.get(modelHandle);
-        GraphVar g = globalHandles.get(graphVarHandle);
+        GraphVar<?> g = globalHandles.get(graphVarHandle);
         IntVar i = globalHandles.get(intVarHandle);
         Constraint c = model.nbNodes(g, i);
         ObjectHandle res = globalHandles.create(c);
@@ -1500,7 +1500,7 @@ public class ConstraintApi {
     public static ObjectHandle nbEdges(IsolateThread thread, ObjectHandle modelHandle,
                                        ObjectHandle graphVarHandle, ObjectHandle intVarHandle) {
         Model model = globalHandles.get(modelHandle);
-        GraphVar g = globalHandles.get(graphVarHandle);
+        GraphVar<?> g = globalHandles.get(graphVarHandle);
         IntVar i = globalHandles.get(intVarHandle);
         Constraint c = model.nbEdges(g, i);
         ObjectHandle res = globalHandles.create(c);
@@ -1513,7 +1513,7 @@ public class ConstraintApi {
     public static ObjectHandle loopSet(IsolateThread thread, ObjectHandle modelHandle,
                                        ObjectHandle graphVarHandle, ObjectHandle setVarHandle) {
         Model model = globalHandles.get(modelHandle);
-        GraphVar g = globalHandles.get(graphVarHandle);
+        GraphVar<?> g = globalHandles.get(graphVarHandle);
         SetVar s = globalHandles.get(setVarHandle);
         Constraint c = model.loopSet(g, s);
         ObjectHandle res = globalHandles.create(c);
@@ -1526,7 +1526,7 @@ public class ConstraintApi {
     public static ObjectHandle nbLoops(IsolateThread thread, ObjectHandle modelHandle,
                                        ObjectHandle graphVarHandle, ObjectHandle intVarHandle) {
         Model model = globalHandles.get(modelHandle);
-        GraphVar g = globalHandles.get(graphVarHandle);
+        GraphVar<?> g = globalHandles.get(graphVarHandle);
         IntVar i = globalHandles.get(intVarHandle);
         Constraint c = model.nbLoops(g, i);
         ObjectHandle res = globalHandles.create(c);
@@ -1560,7 +1560,7 @@ public class ConstraintApi {
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graph_transitivity")
     public static ObjectHandle transitivity(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle graphVarHandle) {
         Model model = globalHandles.get(modelHandle);
-        GraphVar g = globalHandles.get(graphVarHandle);
+        GraphVar<?> g = globalHandles.get(graphVarHandle);
         Constraint c = model.transitivity(g);
         ObjectHandle res = globalHandles.create(c);
         return res;
@@ -1572,8 +1572,8 @@ public class ConstraintApi {
     public static ObjectHandle subgraph(IsolateThread thread, ObjectHandle modelHandle, ObjectHandle graphVarHandle1,
                                         ObjectHandle graphVarHandle2) {
         Model model = globalHandles.get(modelHandle);
-        GraphVar g1 = globalHandles.get(graphVarHandle1);
-        GraphVar g2 = globalHandles.get(graphVarHandle2);
+        GraphVar<?> g1 = globalHandles.get(graphVarHandle1);
+        GraphVar<?> g2 = globalHandles.get(graphVarHandle2);
         if (g1 instanceof UndirectedGraphVar && g2 instanceof UndirectedGraphVar) {
             Constraint c = model.subgraph((UndirectedGraphVar) g1, (UndirectedGraphVar) g2);
             ObjectHandle res = globalHandles.create(c);
@@ -1591,7 +1591,7 @@ public class ConstraintApi {
     public static ObjectHandle nodesChannelingSet(IsolateThread thread, ObjectHandle modelHandle,
                                                   ObjectHandle graphVarHandle, ObjectHandle setVarHandle) {
         Model model = globalHandles.get(modelHandle);
-        GraphVar g = globalHandles.get(graphVarHandle);
+        GraphVar<?> g = globalHandles.get(graphVarHandle);
         SetVar s = globalHandles.get(setVarHandle);
         Constraint c = model.nodesChanneling(g, s);
         ObjectHandle res = globalHandles.create(c);
@@ -1602,7 +1602,7 @@ public class ConstraintApi {
     public static ObjectHandle nodesChannelingBools(IsolateThread thread, ObjectHandle modelHandle,
                                                     ObjectHandle graphVarHandle, ObjectHandle boolVarsHandle) {
         Model model = globalHandles.get(modelHandle);
-        GraphVar g = globalHandles.get(graphVarHandle);
+        GraphVar<?> g = globalHandles.get(graphVarHandle);
         BoolVar[] b = globalHandles.get(boolVarsHandle);
         Constraint c = model.nodesChanneling(g, b);
         ObjectHandle res = globalHandles.create(c);
@@ -1615,7 +1615,7 @@ public class ConstraintApi {
     public static ObjectHandle nodesChannelingSet(IsolateThread thread, ObjectHandle modelHandle,
                                                   ObjectHandle graphVarHandle, ObjectHandle boolVarHandle, int node) {
         Model model = globalHandles.get(modelHandle);
-        GraphVar g = globalHandles.get(graphVarHandle);
+        GraphVar<?> g = globalHandles.get(graphVarHandle);
         BoolVar b = globalHandles.get(boolVarHandle);
         Constraint c = model.nodeChanneling(g, b, node);
         ObjectHandle res = globalHandles.create(c);
@@ -1628,7 +1628,7 @@ public class ConstraintApi {
     public static ObjectHandle edgeChanneling(IsolateThread thread, ObjectHandle modelHandle,
                                               ObjectHandle graphVarHandle, ObjectHandle boolVarHandle, int from, int to) {
         Model model = globalHandles.get(modelHandle);
-        GraphVar g = globalHandles.get(graphVarHandle);
+        GraphVar<?> g = globalHandles.get(graphVarHandle);
         BoolVar b = globalHandles.get(boolVarHandle);
         Constraint c;
         if (g instanceof UndirectedGraphVar) {
@@ -2163,7 +2163,7 @@ public class ConstraintApi {
     public static ObjectHandle diameter(IsolateThread thread, ObjectHandle modelHandle,
                                         ObjectHandle graphVarHandle, ObjectHandle intVarHandle) {
         Model model = globalHandles.get(modelHandle);
-        GraphVar g = globalHandles.get(graphVarHandle);
+        GraphVar<?> g = globalHandles.get(graphVarHandle);
         IntVar i = globalHandles.get(intVarHandle);
         Constraint c;
         if (g instanceof UndirectedGraphVar) {
@@ -2267,10 +2267,12 @@ public class ConstraintApi {
             ObjectHandle modelHandle,
             ObjectHandle varsHandle,
             long propagatorId,
-            PythonPropagator.PropagateFn callback) {
-        Model model = globalHandles.get(modelHandle);
+            PythonPropagator.PropagateFn callback,
+            long isEntailedId,
+            PythonPropagator.IsEntailedFn isEntailedCallback) {
         IntVar[] vars = globalHandles.get(varsHandle);
-        PythonPropagator prop = new PythonPropagator(vars, propagatorId, callback);
+        PythonPropagator prop = new PythonPropagator(
+                vars, propagatorId, callback, isEntailedId, isEntailedCallback);
         Constraint c = new Constraint("PythonPropagator", prop);
         return globalHandles.create(c);
     }

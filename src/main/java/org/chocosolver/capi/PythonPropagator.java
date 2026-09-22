@@ -31,21 +31,38 @@ public class PythonPropagator extends Propagator<IntVar> {
         int invoke(IsolateThread thread, long propagatorId, ObjectHandle varsHandle);
     }
 
+    /**
+     * C function pointer interface for the isEntailed bridge.
+     * Returns 1 = TRUE, 0 = UNDEFINED, -1 (or any negative) = FALSE.
+     * Signature: int bridge(IsolateThread thread, long isEntailedId)
+     */
+    interface IsEntailedFn extends CFunctionPointer {
+        @InvokeCFunctionPointer
+        int invoke(IsolateThread thread, long isEntailedId);
+    }
+
     private final PropagateFn callback;
     private final long propagatorId;
+    private final long isEntailedId;
+    private final IsEntailedFn isEntailedCallback;
     private static final ObjectHandles globalHandles = ObjectHandles.getGlobal();
 
     /**
      * Creates a PythonPropagator.
      *
-     * @param vars         the IntVar variables this propagator acts on
-     * @param propagatorId unique ID used by the C bridge to look up the Python callable
-     * @param callback     C function pointer to the static bridge in backend.c
+     * @param vars               the IntVar variables this propagator acts on
+     * @param propagatorId       unique ID used by the C bridge to dispatch to the propagate callback
+     * @param callback           C function pointer to the propagation bridge in backend.c
+     * @param isEntailedId       unique ID for the isEntailed callback, or -1 to use the default (ESat.TRUE)
+     * @param isEntailedCallback C function pointer to the isEntailed bridge in backend.c
      */
-    public PythonPropagator(IntVar[] vars, long propagatorId, PropagateFn callback) {
+    public PythonPropagator(IntVar[] vars, long propagatorId, PropagateFn callback,
+                            long isEntailedId, IsEntailedFn isEntailedCallback) {
         super(vars, PropagatorPriority.LINEAR, false);
         this.propagatorId = propagatorId;
         this.callback = callback;
+        this.isEntailedId = isEntailedId;
+        this.isEntailedCallback = isEntailedCallback;
     }
 
     @Override
@@ -60,6 +77,12 @@ public class PythonPropagator extends Propagator<IntVar> {
 
     @Override
     public ESat isEntailed() {
+        if (isEntailedId < 0) {
+            return ESat.TRUE;
+        }
+        int result = isEntailedCallback.invoke(CurrentIsolate.getCurrentThread(), isEntailedId);
+        if (result > 0) return ESat.TRUE;
+        if (result < 0) return ESat.FALSE;
         return ESat.UNDEFINED;
     }
 }
