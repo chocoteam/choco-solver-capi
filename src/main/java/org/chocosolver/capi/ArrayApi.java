@@ -1,10 +1,8 @@
 package org.chocosolver.capi;
 
-import com.oracle.svm.core.log.Log;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.constraints.extension.hybrid.ISupportable;
 import org.chocosolver.solver.constraints.nary.cnf.ILogical;
-import org.chocosolver.solver.constraints.nary.cnf.LogOp;
 import org.chocosolver.solver.variables.*;
 import org.chocosolver.util.criteria.Criterion;
 import org.graalvm.nativeimage.IsolateThread;
@@ -325,14 +323,14 @@ public class ArrayApi {
     public static void setGraphVarArrayElement(IsolateThread thread, ObjectHandle arrayHandle,
                                                ObjectHandle graphVarHandle, int index) {
         GraphVar[] array = globalHandles.get(arrayHandle);
-        GraphVar var = globalHandles.get(graphVarHandle);
+        GraphVar<?> var = globalHandles.get(graphVarHandle);
         array[index] = var;
     }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "graphVar_get")
     public static ObjectHandle getGraphVarArrayElement(IsolateThread thread, ObjectHandle arrayHandle, int index) {
         GraphVar[] array = globalHandles.get(arrayHandle);
-        GraphVar var = array[index];
+        GraphVar<?> var = array[index];
         ObjectHandle res = globalHandles.create(var);
         return res;
     }

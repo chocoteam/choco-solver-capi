@@ -74,7 +74,7 @@ public class GraphVarApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_graphvar_lb")
     public static ObjectHandle getLB(IsolateThread thread, ObjectHandle graphVarHandle) {
-        GraphVar g = globalHandles.get(graphVarHandle);
+        GraphVar<?> g = globalHandles.get(graphVarHandle);
         IGraph lb = g.getLB();
         ObjectHandle res = globalHandles.create(lb);
         return res;
@@ -82,7 +82,7 @@ public class GraphVarApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_graphvar_ub")
     public static ObjectHandle getUB(IsolateThread thread, ObjectHandle graphVarHandle) {
-        GraphVar g = globalHandles.get(graphVarHandle);
+        GraphVar<?> g = globalHandles.get(graphVarHandle);
         IGraph ub = g.getLB();
         ObjectHandle res = globalHandles.create(ub);
         return res;
@@ -90,7 +90,7 @@ public class GraphVarApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_graphvar_value")
     public static ObjectHandle getValue(IsolateThread thread, ObjectHandle graphVarHandle) {
-        GraphVar g = globalHandles.get(graphVarHandle);
+        GraphVar<?> g = globalHandles.get(graphVarHandle);
         IGraph ub = g.getValue();
         ObjectHandle res = globalHandles.create(ub);
         return res;
