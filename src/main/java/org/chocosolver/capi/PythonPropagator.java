@@ -47,6 +47,15 @@ public class PythonPropagator extends Propagator<IntVar> {
     private final IsEntailedFn isEntailedCallback;
     private static final ObjectHandles globalHandles = ObjectHandles.getGlobal();
 
+    /** Maps an integer priority value (1–7) to a {@link PropagatorPriority}, defaulting to LINEAR. */
+    private static PropagatorPriority toPriority(int p) {
+        try {
+            return PropagatorPriority.get(p);
+        } catch (Exception e) {
+            return PropagatorPriority.LINEAR;
+        }
+    }
+
     /**
      * Creates a PythonPropagator.
      *
@@ -55,10 +64,11 @@ public class PythonPropagator extends Propagator<IntVar> {
      * @param callback           C function pointer to the propagation bridge in backend.c
      * @param isEntailedId       unique ID for the isEntailed callback, or -1 to use the default (ESat.TRUE)
      * @param isEntailedCallback C function pointer to the isEntailed bridge in backend.c
+     * @param priority           propagator priority (1=UNARY … 7=VERY_SLOW); out-of-range values default to LINEAR (4)
      */
     public PythonPropagator(IntVar[] vars, long propagatorId, PropagateFn callback,
-                            long isEntailedId, IsEntailedFn isEntailedCallback) {
-        super(vars, PropagatorPriority.LINEAR, false);
+                            long isEntailedId, IsEntailedFn isEntailedCallback, int priority) {
+        super(vars, toPriority(priority), false);
         this.propagatorId = propagatorId;
         this.callback = callback;
         this.isEntailedId = isEntailedId;

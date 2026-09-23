@@ -2255,7 +2255,6 @@ public class ConstraintApi {
      * Creates a constraint backed by a Python callable via the C bridge.
      *
      * @param thread        GraalVM isolate thread
-     * @param modelHandle   handle to the Choco Model
      * @param varsHandle    handle to IntVar[] the propagator operates on
      * @param propagatorId  unique ID used by the C bridge to dispatch to the right Python callback
      * @param callback      C function pointer to the static bridge in backend.c
@@ -2264,15 +2263,15 @@ public class ConstraintApi {
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_custom_constraint")
     public static ObjectHandle create_custom_constraint(
             IsolateThread thread,
-            ObjectHandle modelHandle,
             ObjectHandle varsHandle,
             long propagatorId,
             PythonPropagator.PropagateFn callback,
             long isEntailedId,
-            PythonPropagator.IsEntailedFn isEntailedCallback) {
+            PythonPropagator.IsEntailedFn isEntailedCallback,
+            int priority) {
         IntVar[] vars = globalHandles.get(varsHandle);
         PythonPropagator prop = new PythonPropagator(
-                vars, propagatorId, callback, isEntailedId, isEntailedCallback);
+                vars, propagatorId, callback, isEntailedId, isEntailedCallback, priority);
         Constraint c = new Constraint("PythonPropagator", prop);
         return globalHandles.create(c);
     }
