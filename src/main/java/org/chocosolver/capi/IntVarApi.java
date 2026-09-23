@@ -1,6 +1,8 @@
 package org.chocosolver.capi;
 
+import org.chocosolver.solver.Cause;
 import org.chocosolver.solver.Model;
+import org.chocosolver.solver.exception.ContradictionException;
 import org.chocosolver.solver.variables.IntVar;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.ObjectHandle;
@@ -131,6 +133,75 @@ public class IntVarApi {
         int[] values = var.stream().toArray();
         ObjectHandle vals = globalHandles.create(values);
         return vals;
+    }
+
+    // ------------------------------- //
+    // Domain filtering methods        //
+    // (for use inside propagators)    //
+    // ------------------------------- //
+
+    /**
+     * Updates the upper bound of a variable.
+     * Intended for use inside Python propagator callbacks.
+     *
+     * @return 1 if the bound was tightened, 0 if already satisfied, -1 if contradiction
+     */
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "updateUpperBound")
+    public static int updateUpperBound(IsolateThread thread, ObjectHandle intVarHandle, int value) {
+        IntVar var = globalHandles.get(intVarHandle);
+        try {
+            return var.updateUpperBound(value, Cause.Null) ? 1 : 0;
+        } catch (ContradictionException e) {
+            return -1;
+        }
+    }
+
+    /**
+     * Updates the lower bound of a variable.
+     * Intended for use inside Python propagator callbacks.
+     *
+     * @return 1 if the bound was tightened, 0 if already satisfied, -1 if contradiction
+     */
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "updateLowerBound")
+    public static int updateLowerBound(IsolateThread thread, ObjectHandle intVarHandle, int value) {
+        IntVar var = globalHandles.get(intVarHandle);
+        try {
+            return var.updateLowerBound(value, Cause.Null) ? 1 : 0;
+        } catch (ContradictionException e) {
+            return -1;
+        }
+    }
+
+    /**
+     * Instantiates a variable to a given value.
+     * Intended for use inside Python propagator callbacks.
+     *
+     * @return 1 if the domain changed, 0 if already satisfied, -1 if contradiction
+     */
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "instantiateTo")
+    public static int instantiateTo(IsolateThread thread, ObjectHandle intVarHandle, int value) {
+        IntVar var = globalHandles.get(intVarHandle);
+        try {
+            return var.instantiateTo(value, Cause.Null) ? 1 : 0;
+        } catch (ContradictionException e) {
+            return -1;
+        }
+    }
+
+    /**
+     * Removes a value from the domain of a variable.
+     * Intended for use inside Python propagator callbacks.
+     *
+     * @return 1 if the domain changed, 0 if the value was not present, -1 if contradiction
+     */
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "removeValue")
+    public static int removeValue(IsolateThread thread, ObjectHandle intVarHandle, int value) {
+        IntVar var = globalHandles.get(intVarHandle);
+        try {
+            return var.removeValue(value, Cause.Null) ? 1 : 0;
+        } catch (ContradictionException e) {
+            return -1;
+        }
     }
 
 }
