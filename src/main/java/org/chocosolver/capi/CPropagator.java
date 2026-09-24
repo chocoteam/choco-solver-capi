@@ -13,14 +13,15 @@ import org.graalvm.nativeimage.c.function.CFunctionPointer;
 import org.graalvm.nativeimage.c.function.InvokeCFunctionPointer;
 
 /**
- * A Choco propagator that delegates its propagation logic to a Python callback
- * via a C function pointer bridge.
+ * A Choco propagator that delegates its propagation logic to an external
+ * callback via a C function pointer bridge.
  *
- * <p>The bridge function receives a propagator ID and a handle to the variable
- * array, then dispatches to the appropriate Python callable registered in the
+ * <p>Any language that supports the C ABI (Python/ctypes, Rust/FFI, etc.)
+ * can provide the callbacks. The bridge receives a propagator ID and a handle
+ * to the variable array, then dispatches to the registered callback in the
  * C layer.</p>
  */
-public class PythonPropagator extends Propagator<IntVar> {
+public class CPropagator extends Propagator<IntVar> {
 
     /**
      * C function pointer interface for the propagation bridge.
@@ -57,17 +58,17 @@ public class PythonPropagator extends Propagator<IntVar> {
     }
 
     /**
-     * Creates a PythonPropagator.
+     * Creates a CPropagator.
      *
      * @param vars               the IntVar variables this propagator acts on
      * @param propagatorId       unique ID used by the C bridge to dispatch to the propagate callback
-     * @param callback           C function pointer to the propagation bridge in backend.c
+     * @param callback           C function pointer to the propagation bridge
      * @param isEntailedId       unique ID for the isEntailed callback, or -1 to use the default (ESat.TRUE)
-     * @param isEntailedCallback C function pointer to the isEntailed bridge in backend.c
+     * @param isEntailedCallback C function pointer to the isEntailed bridge
      * @param priority           propagator priority (1=UNARY … 7=VERY_SLOW); out-of-range values default to LINEAR (4)
      */
-    public PythonPropagator(IntVar[] vars, long propagatorId, PropagateFn callback,
-                            long isEntailedId, IsEntailedFn isEntailedCallback, int priority) {
+    public CPropagator(IntVar[] vars, long propagatorId, PropagateFn callback,
+                       long isEntailedId, IsEntailedFn isEntailedCallback, int priority) {
         super(vars, toPriority(priority), false);
         this.propagatorId = propagatorId;
         this.callback = callback;

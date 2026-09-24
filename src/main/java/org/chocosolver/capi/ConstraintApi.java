@@ -2252,12 +2252,15 @@ public class ConstraintApi {
     // PYTHON PROPAGATOR
 
     /**
-     * Creates a constraint backed by a Python callable via the C bridge.
+     * Creates a constraint backed by an external C ABI callback (Python/ctypes, Rust/FFI, …).
      *
      * @param thread        GraalVM isolate thread
      * @param varsHandle    handle to IntVar[] the propagator operates on
-     * @param propagatorId  unique ID used by the C bridge to dispatch to the right Python callback
-     * @param callback      C function pointer to the static bridge in backend.c
+     * @param propagatorId  unique ID used by the C bridge to dispatch to the right callback
+     * @param callback      C function pointer to the propagation bridge
+     * @param isEntailedId  unique ID for the isEntailed callback, or -1 for default (ESat.TRUE)
+     * @param isEntailedCallback C function pointer to the isEntailed bridge
+     * @param priority      propagator priority (1=UNARY … 7=VERY_SLOW)
      * @return handle to the created Constraint
      */
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "create_custom_constraint")
@@ -2265,14 +2268,14 @@ public class ConstraintApi {
             IsolateThread thread,
             ObjectHandle varsHandle,
             long propagatorId,
-            PythonPropagator.PropagateFn callback,
+            CPropagator.PropagateFn callback,
             long isEntailedId,
-            PythonPropagator.IsEntailedFn isEntailedCallback,
+            CPropagator.IsEntailedFn isEntailedCallback,
             int priority) {
         IntVar[] vars = globalHandles.get(varsHandle);
-        PythonPropagator prop = new PythonPropagator(
+        CPropagator prop = new CPropagator(
                 vars, propagatorId, callback, isEntailedId, isEntailedCallback, priority);
-        Constraint c = new Constraint("PythonPropagator", prop);
+        Constraint c = new Constraint("CPropagator", prop);
         return globalHandles.create(c);
     }
 }
