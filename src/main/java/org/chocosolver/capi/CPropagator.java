@@ -11,6 +11,7 @@ import org.graalvm.nativeimage.ObjectHandle;
 import org.graalvm.nativeimage.ObjectHandles;
 import org.graalvm.nativeimage.c.function.CFunctionPointer;
 import org.graalvm.nativeimage.c.function.InvokeCFunctionPointer;
+import org.graalvm.nativeimage.c.type.CTypedef;
 
 /**
  * A Choco propagator that delegates its propagation logic to an external
@@ -27,6 +28,7 @@ public class CPropagator extends Propagator<IntVar> {
      * C function pointer interface for the propagation bridge.
      * Signature: int bridge(IsolateThread thread, long propagatorId, ObjectHandle varsHandle)
      */
+    @CTypedef(name = "propagate_fn_callback_t")
     interface PropagateFn extends CFunctionPointer {
         @InvokeCFunctionPointer
         int invoke(IsolateThread thread, long propagatorId, ObjectHandle varsHandle);
@@ -37,6 +39,7 @@ public class CPropagator extends Propagator<IntVar> {
      * Returns 1 = TRUE, 0 = UNDEFINED, -1 (or any negative) = FALSE.
      * Signature: int bridge(IsolateThread thread, long isEntailedId)
      */
+    @CTypedef(name = "is_entailed_fn_callback_t")
     interface IsEntailedFn extends CFunctionPointer {
         @InvokeCFunctionPointer
         int invoke(IsolateThread thread, long isEntailedId);
@@ -79,10 +82,13 @@ public class CPropagator extends Propagator<IntVar> {
     @Override
     public void propagate(int evtmask) throws ContradictionException {
         ObjectHandle varsHandle = globalHandles.create(this.vars);
-        int result = callback.invoke(CurrentIsolate.getCurrentThread(), propagatorId, varsHandle);
-        globalHandles.destroy(varsHandle);
-        if (result < 0) {
-            this.fails();
+        try {
+            int result = callback.invoke(CurrentIsolate.getCurrentThread(), propagatorId, varsHandle);
+            if (result < 0) {
+                this.fails();
+            }
+        } finally {
+            globalHandles.destroy(varsHandle);
         }
     }
 

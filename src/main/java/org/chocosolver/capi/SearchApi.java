@@ -193,15 +193,15 @@ public class SearchApi {
             ObjectHandle solverHandle,
             ObjectHandle varsHandle,
             long varSelectorId,
-            PythonSearch.VarSelectorFn varCallback,
+            CSearch.VarSelectorFn varCallback,
             long valSelectorId,
-            PythonSearch.ValSelectorFn valCallback) {
+            CSearch.ValSelectorFn valCallback) {
         Solver solver = globalHandles.get(solverHandle);
         IntVar[] vars = globalHandles.get(varsHandle);
-        PythonSearch.PythonVariableSelector varSel =
-                new PythonSearch.PythonVariableSelector(vars, varSelectorId, varCallback);
-        PythonSearch.PythonValueSelector valSel =
-                new PythonSearch.PythonValueSelector(vars, valSelectorId, valCallback);
+        CSearch.CVariableSelector varSel =
+                new CSearch.CVariableSelector(vars, varSelectorId, varCallback);
+        CSearch.CValueSelector valSel =
+                new CSearch.CValueSelector(vars, valSelectorId, valCallback);
         solver.setSearch(Search.intVarSearch(varSel, valSel, vars));
     }
 

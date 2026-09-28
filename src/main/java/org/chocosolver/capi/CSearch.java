@@ -7,6 +7,7 @@ import org.graalvm.nativeimage.CurrentIsolate;
 import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.function.CFunctionPointer;
 import org.graalvm.nativeimage.c.function.InvokeCFunctionPointer;
+import org.graalvm.nativeimage.c.type.CTypedef;
 
 /**
  * Python-backed variable and value selectors for custom search strategies.
@@ -20,12 +21,13 @@ import org.graalvm.nativeimage.c.function.InvokeCFunctionPointer;
  * <p>Value selector bridge signature:
  *   {@code int bridge(IsolateThread, long selectorId, int varIdx) -> chosen value}
  */
-public class PythonSearch {
+public class CSearch {
 
     /**
      * C function pointer for the variable selector bridge.
      * Returns the index of the chosen variable in the {@code vars[]} array, or -1 if none.
      */
+    @CTypedef(name = "var_selector_fn_callback_t")
     interface VarSelectorFn extends CFunctionPointer {
         @InvokeCFunctionPointer
         int invoke(IsolateThread thread, long selectorId);
@@ -36,18 +38,19 @@ public class PythonSearch {
      * Receives the index of the target variable in the stored {@code vars[]} array.
      * Returns the value to assign.
      */
+    @CTypedef(name = "val_selector_fn_callback_t")
     interface ValSelectorFn extends CFunctionPointer {
         @InvokeCFunctionPointer
         int invoke(IsolateThread thread, long selectorId, int varIdx);
     }
 
     /** Variable selector that delegates to a Python callback via the C bridge. */
-    static class PythonVariableSelector implements VariableSelector<IntVar> {
+    static class CVariableSelector implements VariableSelector<IntVar> {
         private final IntVar[] registeredVars;
         private final long selectorId;
         private final VarSelectorFn callback;
 
-        PythonVariableSelector(IntVar[] registeredVars, long selectorId, VarSelectorFn callback) {
+        CVariableSelector(IntVar[] registeredVars, long selectorId, VarSelectorFn callback) {
             this.registeredVars = registeredVars;
             this.selectorId = selectorId;
             this.callback = callback;
@@ -73,12 +76,12 @@ public class PythonSearch {
      * When {@code selectValue} is called by the solver, the target variable is identified by
      * scanning {@code storedVars} for a reference match, and the index is forwarded to Python.
      */
-    static class PythonValueSelector implements IntValueSelector {
+    static class CValueSelector implements IntValueSelector {
         private final IntVar[] storedVars;
         private final long selectorId;
         private final ValSelectorFn callback;
 
-        PythonValueSelector(IntVar[] storedVars, long selectorId, ValSelectorFn callback) {
+        CValueSelector(IntVar[] storedVars, long selectorId, ValSelectorFn callback) {
             this.storedVars = storedVars;
             this.selectorId = selectorId;
             this.callback = callback;
