@@ -22,7 +22,7 @@ public class ListApi {
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "size")
     public static int getListSize(IsolateThread thread, ObjectHandle listHandle) {
-        List list = globalHandles.get(listHandle);
+        List<?> list = globalHandles.get(listHandle);
         return list.size();
     }
 

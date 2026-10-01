@@ -1,7 +1,6 @@
 package org.chocosolver.capi;
 
 import org.chocosolver.solver.Solution;
-import org.chocosolver.solver.variables.GraphVar;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.SetVar;
 import org.graalvm.nativeimage.IsolateThread;
