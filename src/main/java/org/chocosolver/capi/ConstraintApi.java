@@ -721,12 +721,14 @@ public class ConstraintApi {
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "globalCardinality")
     public static ObjectHandle globalCardinality(IsolateThread thread, ObjectHandle modelHandle,
                                                  ObjectHandle intVarArrayHandle, ObjectHandle valuesHandle,
-                                                 ObjectHandle occurrencesHandle, boolean closed) {
+                                                 ObjectHandle occurrencesHandle, boolean closed,
+                                                 CCharPointer consistency) {
         Model model = globalHandles.get(modelHandle);
         IntVar[] intVars = globalHandles.get(intVarArrayHandle);
         IntVar[] occurrences = globalHandles.get(occurrencesHandle);
         int[] values = globalHandles.get(valuesHandle);
-        Constraint gcc = model.globalCardinality(intVars, values, occurrences, closed);
+        final String consistencyString = CTypeConversion.toJavaString(consistency);
+        Constraint gcc = model.globalCardinality(intVars, values, occurrences, closed, consistencyString);
         ObjectHandle res = globalHandles.create(gcc);
         return res;
     }
