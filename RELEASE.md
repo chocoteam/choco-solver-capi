@@ -4,7 +4,9 @@ A release is an annotated tag `choco-solver-capi-X.Y.Z` on a commit whose `pom.x
 version `X.Y.Z`. Nothing is deployed: the native library is built by the projects that use it
 (pychoco builds it in its own CI, at the commit its submodule points to).
 
-1. Check that the [Build workflow](.github/workflows/build.yml) is green on `master`.
+1. Check that the [Build workflow](.github/workflows/build.yml) is green on `master`. If the
+   choco-solver or GraalVM version changed since the last release, record a new PGO profile first
+   (see [pgo/README.md](pgo/README.md)).
 
 2. Set the release version and commit it:
 
