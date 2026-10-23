@@ -63,6 +63,8 @@
     </profiles>
 
     <build>
+        <!-- Version-independent jar name, so that build.sh does not change on each release -->
+        <finalName>choco-solver-capi</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
