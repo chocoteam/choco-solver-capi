@@ -13,8 +13,9 @@ version `X.Y.Z`. Nothing is deployed: the native library is built by the project
    git commit -am "Release X.Y.Z"
    ```
 
-3. Tag it, with release notes in the tag message: the bundled choco-solver version (the
-   `choco-solver` dependency of `pom.xml`) and the changes since the previous tag
+3. Tag it. The first line of the tag message is the release title (`choco-solver-capi X.Y.Z`),
+   the rest its notes: the bundled choco-solver version (the `choco-solver` dependency of
+   `pom.xml`) and the changes since the previous tag
    (`git log --oneline choco-solver-capi-<previous>..HEAD`):
 
    ```sh
@@ -29,7 +30,9 @@ version `X.Y.Z`. Nothing is deployed: the native library is built by the project
    git push origin master choco-solver-capi-X.Y.Z
    ```
 
-5. Optionally, create a GitHub Release from the tag, reusing its message.
+5. The tag push runs the Build workflow, whose `release` job turns the tag into a GitHub Release
+   once the native library builds on the three OS. Check it on the Releases page; if the job
+   failed, fix the cause and re-run it rather than moving the tag.
 
 6. In pychoco, point the submodule to the tagged commit (not to the development version that
    follows it) and mention the update in `NEWS.md`:

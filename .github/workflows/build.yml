@@ -46,3 +46,23 @@ jobs:
         run: |
           ls target/libchoco_capi.h target/graal_isolate.h
           test -n "$(ls target/libchoco_capi.so target/libchoco_capi.dylib target/choco_capi.dll 2>/dev/null)"
+
+  # A release tag becomes a GitHub Release, whose notes are the message of the annotated tag
+  release:
+    name: GitHub Release
+    needs: native
+    if: startsWith(github.ref, 'refs/tags/choco-solver-capi-')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git fetch --force origin "refs/tags/$GITHUB_REF_NAME:refs/tags/$GITHUB_REF_NAME"
+          test "$(git cat-file -t "$GITHUB_REF_NAME")" = tag  # annotated tags only, see RELEASE.md
+          git tag -l --format='%(contents:body)' "$GITHUB_REF_NAME" > notes.md
+          gh release create "$GITHUB_REF_NAME" --verify-tag --notes-file notes.md \
+            --title "$(git tag -l --format='%(contents:subject)' "$GITHUB_REF_NAME")"
