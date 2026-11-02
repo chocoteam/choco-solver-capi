@@ -159,6 +159,18 @@ public class SolverApi {
         solver.getEnvironment().worldPop();
     }
 
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "reset")
+    public static void reset(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        solver.reset();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "hard_reset")
+    public static void hardReset(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        solver.hardReset();
+    }
+
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_time_count")
     public static float getTimeCount(IsolateThread thread, ObjectHandle solverHandler) {
         Solver solver = globalHandles.get(solverHandler);
