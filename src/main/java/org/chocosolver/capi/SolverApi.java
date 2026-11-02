@@ -14,7 +14,11 @@ import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * C entrypoint API to manipulate Solver objects.
@@ -26,13 +30,28 @@ public class SolverApi {
 
     private static ObjectHandles globalHandles = ObjectHandles.getGlobal();
 
+    /**
+     * Stop criteria added by {@link #solve} and not yet removed, per solver. They are kept while
+     * solve() finds solutions (e.g. in a loop), and all removed once it returns false.
+     */
+    private static final Map<Solver, List<Criterion>> SOLVE_CRITERIA =
+            Collections.synchronizedMap(new WeakHashMap<>());
+
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "solve")
     public static boolean solve(IsolateThread thread, ObjectHandle solverHandler,
                                 ObjectHandle stopArrayHandle) {
         Solver solver = globalHandles.get(solverHandler);
         Criterion[] stop = globalHandles.get(stopArrayHandle);
+        List<Criterion> added = SOLVE_CRITERIA.computeIfAbsent(solver, k -> new ArrayList<>());
+        Collections.addAll(added, stop);
         solver.addStopCriterion(stop);
         boolean res = solver.solve();
+        if (!res) {
+            // End of the search (or stop on a criterion): remove every criterion added by the
+            // successive calls, so that a later solve() does not inherit them.
+            solver.removeStopCriterion(added.toArray(new Criterion[0]));
+            SOLVE_CRITERIA.remove(solver);
+        }
         return res;
     }
 
@@ -157,6 +176,18 @@ public class SolverApi {
     public static void popState(IsolateThread thread, ObjectHandle solverHandler) {
         Solver solver = globalHandles.get(solverHandler);
         solver.getEnvironment().worldPop();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "reset")
+    public static void reset(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        solver.reset();
+    }
+
+    @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "hard_reset")
+    public static void hardReset(IsolateThread thread, ObjectHandle solverHandler) {
+        Solver solver = globalHandles.get(solverHandler);
+        solver.hardReset();
     }
 
     @CEntryPoint(name = Constants.METHOD_PREFIX + API_PREFIX + "get_time_count")
